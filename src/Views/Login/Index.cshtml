@@ -1,0 +1,21 @@
+@{
+    Layout = "_HomeLayout";
+}
+
+<form class="login-form" asp-action="Submit">
+    <h1 class="center">Login</h1>
+
+    <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" name="Username" id="username" />
+    </div>
+
+    <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" name="Password" id="password" />
+    </div>
+
+    <div class="button-row button-row--right">
+        <button type="submit" class="right">Login</button>
+    </div>
+</form>

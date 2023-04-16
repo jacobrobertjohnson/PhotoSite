@@ -1,0 +1,27 @@
+@inject PhotoSite.Bundling.BundleFile _bundler;
+
+<!doctype html>
+
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/site.min.css" />
+    </environment>
+
+    <environment include="Development">
+        @foreach (string stylesheet in _bundler.ExpandBundle("wwwroot/css/site.min.css")) {
+            <text>
+                <link rel="stylesheet" href="@Url.Content(stylesheet)" />
+            </text>
+        }
+    </environment>
+</head>
+
+<body>
+    @RenderBody()
+</body>
+
+</html>
