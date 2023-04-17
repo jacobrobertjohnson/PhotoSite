@@ -1,5 +1,6 @@
 body {
     background: lightskyblue;
+    align-items: center;
 }
 
 /* Form Fields */
@@ -52,12 +53,29 @@ button {
     padding: 1rem;
 }
 
+.families {
+    width: calc(100% - 2rem);
+}
+
+.family {
+    margin-top: 1rem;
+}
+
+.family__header {
+    font-weight: bold;
+    border-bottom: 2px solid #000;
+}
+
 @media screen and (min-width: 480px) {
     body {
-        align-items: center;
         justify-content: center;
     }
+
 	.login-form {
         width: 20rem;
+    }
+
+    .families {
+        width: 50rem;
     }
 }

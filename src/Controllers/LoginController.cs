@@ -31,14 +31,23 @@ public class LoginController : Controller
             var claims = new List<Claim>() {
                 new Claim("user", "jake"),
                 new Claim("role", "admin"),
-                new Claim("families", "Salo,JohnsonJake,JohnsonJeff")
+                new Claim("families", "Salo,JohnsonJake,JohnsonJeff"),
+                new Claim("photosFamilies", "Salo,JohnsonJake")
             };
 
-            await HttpContext.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies", "user", "role")));
+            var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies", "user", "role"));
+            
+            await HttpContext.SignInAsync(principal);
 
             response = RedirectToAction("Index", "Home");
         }
 
         return response;
+    }
+
+    public async Task<IActionResult> Logout() {
+        await HttpContext.SignOutAsync();
+
+        return RedirectToAction("Index");
     }
 }

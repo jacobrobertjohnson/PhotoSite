@@ -1,7 +1,15 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using PhotoSite.Authentication;
 using PhotoSite.Bundling;
+using PhotoSite.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var appSettings = new AppSettings();
+
+builder.Configuration.Bind("AppSettings", appSettings);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -20,7 +28,18 @@ builder.Services.AddAuthentication(options => {
         options.Cookie.HttpOnly = true;
     });
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddSingleton<BundleFile>();
+builder.Services.AddSingleton<AppSettings>(appSettings);
+builder.Services.AddSingleton<IAuthenticator, Authenticator>();
+builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+builder.Services.AddScoped<IUrlHelper>(factory =>
+{
+    var actionContext = factory.GetService<IActionContextAccessor>().ActionContext;
+    return factory.GetService<IUrlHelperFactory>().GetUrlHelper(actionContext);
+});
 
 var app = builder.Build();
 

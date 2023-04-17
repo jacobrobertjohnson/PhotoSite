@@ -1,5 +1,23 @@
+@using PhotoSite.Models;
+
 @{
     Layout = "_HomeLayout";
 }
 
-<h1>Home</h1>
+@model Home_Index_Model
+
+<div class="families">
+    @foreach (Home_Index_Family family in Model.Families) {
+        <text>
+            <div class="family">
+                <div class="family__header">@family.Name</div>
+
+                @foreach (Home_Index_App app in family.Apps) {
+                    <text>
+                        <a href="@app.Url">@app.Name</a>
+                    </text>
+                }
+            </div>
+        </text>
+    }
+</div>
