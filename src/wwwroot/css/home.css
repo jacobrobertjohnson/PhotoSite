@@ -27,6 +27,16 @@ button {
     font-weight: bold;
 }
 
+.validation-message {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+}
+
+.validation-message--failed {
+    background: red;
+    color: white;
+}
+
 /* Form Groups */
 .button-row {
     display: flex;
@@ -45,6 +55,7 @@ button {
 @media screen and (min-width: 480px) {
     body {
         align-items: center;
+        justify-content: center;
     }
 	.login-form {
         width: 20rem;

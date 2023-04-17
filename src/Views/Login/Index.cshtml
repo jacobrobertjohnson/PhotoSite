@@ -2,8 +2,18 @@
     Layout = "_HomeLayout";
 }
 
-<form class="login-form" asp-action="Submit">
+@model PhotoSite.Models.Login_Index_Model;
+
+<form class="login-form" asp-action="Authenticate">
     <h1 class="center">Login</h1>
+
+    @if (Model.Message != null) {
+        <text>
+            <p class="validation-message validation-message--@Model.MessageType">
+                @Model.Message;
+            </p>
+        </text>
+    }
 
     <div class="input-group">
         <label for="username">Username</label>
