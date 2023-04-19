@@ -1,0 +1,32 @@
+:root {
+    --header-height: 2rem;
+}
+
+.site-header {
+    background: darkslategray;
+    color: white;
+    height: var(--header-height);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+}
+
+.site-header a,
+.site-header a:visited {
+    color: white;
+    text-decoration: none;
+}
+
+.sidebar {
+    background: silver;
+    box-shadow: 0 0 2rem black;
+    width: 17rem;
+    position: fixed;
+    top: var(--header-height);
+    height: calc(100vh - var(--header-height));
+}
