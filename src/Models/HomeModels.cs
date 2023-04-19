@@ -35,7 +35,7 @@ public class Home_Index_Family
 
     public Home_Index_Family(IServiceProvider dependencies) {
         _authenticator = dependencies.GetService<IAuthenticator>();
-        _photosFamilies = _authenticator.GetClaimValue("families").Split(',');
+        _photosFamilies = _authenticator.GetClaimValue("photosFamilies").Split(',');
     }
 
     public Home_Index_Family(IServiceProvider dependencies, Family fam) : this(dependencies) {
@@ -46,7 +46,7 @@ public class Home_Index_Family
         if (_photosFamilies.Contains(fam.Id))
             Apps.Add(new Home_Index_App() {
                 Name = "Photos",
-                Url = urlHelper.Action("Index", "Photos")
+                Url = urlHelper.Action("Index", "Photos", new { familyId = fam.Id })
             });
     }
 

@@ -3,6 +3,17 @@
         "outputFileName": "wwwroot/css/site.min.css",
         "inputFiles": [
             "wwwroot/css/site.css",
+            "wwwroot/css/photos.css"
+        ],
+        "minify": {
+            "enabled": true,
+            "renameLocals": true
+        },
+        "sourceMap": false
+    }, {
+        "outputFileName": "wwwroot/css/home.min.css",
+        "inputFiles": [
+            "wwwroot/css/site.css",
             "wwwroot/css/home.css"
         ],
         "minify": {
