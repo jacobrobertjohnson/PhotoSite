@@ -15,6 +15,10 @@ body {
 }
 
 /* Layout */
+.hidden {
+	display: none;
+}
+
 .center {
 	text-align: center;
 }

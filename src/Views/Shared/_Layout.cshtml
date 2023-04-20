@@ -1,7 +1,11 @@
 @{
     string styleBundle = ViewBag.StyleBundle ?? "~/css/site.min.css",
         styleBundleUrl = Url.Content(styleBundle),
-        styleBundlePath = styleBundle.Replace("~", "wwwroot");
+        styleBundlePath = styleBundle.Replace("~", "wwwroot"),
+
+        scriptBundle = ViewBag.ScriptBundle ?? "~/js/site.min.js",
+        scriptBundleUrl = Url.Content(scriptBundle),
+        scriptBundlePath = scriptBundle.Replace("~", "wwwroot");
 }
 
 @inject PhotoSite.Bundling.BundleFile _bundler;
@@ -26,8 +30,20 @@
     </environment>
 </head>
 
-<body>
+<body id="app">
     @RenderBody()
+    
+    <environment exclude="Development">
+        <script src="@styleBundleUrl"></script>
+    </environment>
+
+    <environment include="Development">
+        @foreach (string script in _bundler.ExpandBundle(scriptBundlePath)) {
+            <text>
+                <script src="@Url.Content(script)"></script>
+            </text>
+        }
+    </environment>
 </body>
 
 </html>

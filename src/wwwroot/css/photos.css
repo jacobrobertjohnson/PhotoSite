@@ -1,5 +1,6 @@
 :root {
     --header-height: 2rem;
+    --sidebar-width: 17rem;
 }
 
 .site-header {
@@ -25,8 +26,28 @@
 .sidebar {
     background: silver;
     box-shadow: 0 0 2rem black;
-    width: 17rem;
+    width: var(--sidebar-width);
     position: fixed;
     top: var(--header-height);
+    left: 0;
     height: calc(100vh - var(--header-height));
+    display: none;
+}
+
+body.has-sidebar .sidebar{
+    display: flex
+}
+
+@media screen and (min-width: 480px) {
+    body {
+        padding-top: var(--header-height);
+    }
+
+    body.has-sidebar {
+        padding-left: var(--sidebar-width);
+    }
+
+    .sidebar {
+        box-shadow: none;
+    }
 }
