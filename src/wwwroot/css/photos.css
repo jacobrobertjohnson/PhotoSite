@@ -1,6 +1,8 @@
 :root {
-    --header-height: 2rem;
+    --header-height: 2.5rem;
     --sidebar-width: 17rem;
+    --sidebar-width-transition-time: 0.1s;
+    --photo-gutter: 2px;
 }
 
 .site-header {
@@ -9,7 +11,7 @@
     height: var(--header-height);
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: stretch;
     position: fixed;
     top: 0;
     left: 0;
@@ -19,32 +21,48 @@
 
 .site-header a,
 .site-header a:visited {
+    cursor: pointer;
+    display: flex;
+    padding: 0 0.5rem;
+    align-items: center;
     color: white;
     text-decoration: none;
 }
 
+.sidebar-toggler {
+    font-size: 2rem;
+}
+
+
 .sidebar {
-    background: silver;
-    box-shadow: 0 0 2rem black;
-    width: var(--sidebar-width);
+    background: whitesmoke;
+    border-right: 1px solid lightgray;
+    box-shadow: 0 0 2rem black; 
     position: fixed;
     top: var(--header-height);
     left: 0;
     height: calc(100vh - var(--header-height));
-    display: none;
+    overflow-y: hidden;
+    overflow-x: auto;
+    width: 0;
+    transition: width var(--sidebar-width-transition-time) ease-in-out;
 }
 
 body.has-sidebar .sidebar{
-    display: flex
+    width: var(--sidebar-width);
+    transition: width var(--sidebar-width-transition-time) ease-in-out;
 }
 
 @media screen and (min-width: 480px) {
     body {
-        padding-top: var(--header-height);
+        padding-top: calc(var(--header-height) + var(--photo-gutter));
+        padding-left: var(--photo-gutter);
+        transition: padding-left var(--sidebar-width-transition-time) ease-in-out;
     }
 
     body.has-sidebar {
-        padding-left: var(--sidebar-width);
+        padding-left: calc(var(--sidebar-width) + var(--photo-gutter));
+        transition: padding-left var(--sidebar-width-transition-time) ease-in-out;
     }
 
     .sidebar {
