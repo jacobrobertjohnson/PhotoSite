@@ -53,6 +53,22 @@ body.has-sidebar .sidebar{
     transition: width var(--sidebar-width-transition-time) ease-in-out;
 }
 
+.photo-thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.photo-thumbnails::after {
+    content: "";
+    flex: auto;
+}
+
+.photo-thumbnail {
+    margin-right: var(--photo-gutter);
+    margin-bottom: var(--photo-gutter);
+}
+
 @media screen and (min-width: 480px) {
     body {
         padding-top: calc(var(--header-height) + var(--photo-gutter));
