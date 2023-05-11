@@ -28,8 +28,8 @@ window.imageSizer = (function(containerSel, sidebar) {
     function update() {
         let newSize = _$container.clientWidth / _imgPerRow;
 
-        _$plusBtn.setAttribute("disabled", _imgPerRow === 1);
-        _$minusBtn.setAttribute("disabled", _imgPerRow === 10);
+        _$plusBtn.disabled = _imgPerRow === 1;
+        _$minusBtn.disabled = _imgPerRow === 10;
 
         if (newSize != _size) {
             _size = newSize;
