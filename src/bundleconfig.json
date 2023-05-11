@@ -24,7 +24,9 @@
     }, {
         "outputFileName": "wwwroot/js/photos.min.js",
         "inputFiles": [
-            "wwwroot/js/Photos/sidebar.js"
+            "wwwroot/js/Photos/sidebar.js",
+            "wwwroot/js/Photos/imageSizer.js",
+            "wwwroot/js/Photos/thumbnails.js"
         ],
         "minify": {
             "enabled": true,

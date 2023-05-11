@@ -35,6 +35,7 @@ builder.Services.AddSingleton<BundleFile>();
 builder.Services.AddSingleton<AppSettings>(appSettings);
 builder.Services.AddSingleton<IAuthenticator, Authenticator>();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+builder.Services.AddSingleton<ISqliteContext, SqliteContext>();
 builder.Services.AddSingleton<ILibraryProvider, SqliteLibraryProvider>();
 
 builder.Services.AddScoped<IUrlHelper>(factory =>
