@@ -28,7 +28,7 @@ public class Photo {
     public Photo() { }
 
     public Photo(string familyId, IUrlHelper url, QueryPhoto dbPhoto) {
-        ThumbnailUrl = $"/Photos/{familyId}/Thumbnails/{dbPhoto.DateTaken:yyyy-MM-dd}/[size]/{dbPhoto.Id}{dbPhoto.Extension}";
+        ThumbnailUrl = $"/Photos/{familyId}/Thumbnails/[size]/{dbPhoto.Id}";
     }
 
     public static List<Photo> MakeList(string familyId, IUrlHelper url, List<QueryPhoto> dbPhotos) {

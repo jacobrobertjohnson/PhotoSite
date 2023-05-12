@@ -1,6 +1,14 @@
 window.imageSizer = (function(containerSel, sidebar) {
     const PERSIST_ID = "imgPerRow",
-        PERSIST_VAL = localStorage.getItem(PERSIST_ID);
+        PERSIST_VAL = localStorage.getItem(PERSIST_ID),
+        HEIGHT_BREAKPOINTS = [
+            30,
+            60,
+            100,
+            150,
+            300,
+            500
+        ];
 
     let _$container = document.querySelector(containerSel),
         _$plusBtn = document.getElementById("zoom-plus"),
@@ -10,8 +18,6 @@ window.imageSizer = (function(containerSel, sidebar) {
         _size;
 
     document.body.appendChild(_$styler);
-    sidebar.subscribe(update);
-    document.addEventListener("resize", update);
 
     _$plusBtn.addEventListener("click", function() {
         _imgPerRow--;
@@ -26,16 +32,27 @@ window.imageSizer = (function(containerSel, sidebar) {
     update();
 
     function update() {
-        let newSize = _$container.clientWidth / _imgPerRow;
+        _size = getHeightBreakpoint();
+        render();
+        persist();
+    }
 
-        _$plusBtn.disabled = _imgPerRow === 1;
-        _$minusBtn.disabled = _imgPerRow === 10;
+    function getHeightBreakpoint() {
+        let realSize = _$container.clientWidth / _imgPerRow,
+            breakpointSize = null;
 
-        if (newSize != _size) {
-            _size = newSize;
-            render();
-            persist();
+        for (let i = 0; i < HEIGHT_BREAKPOINTS.length; i++) {
+            if (realSize >= HEIGHT_BREAKPOINTS[i])
+                breakpointSize = HEIGHT_BREAKPOINTS[i];
         }
+
+        if (!breakpointSize)
+            if (realSize < HEIGHT_BREAKPOINTS[0])
+                breakpointSize = HEIGHT_BREAKPOINTS[0]
+            else
+                breakpointSize = HEIGHT_BREAKPOINTS[HEIGHT_BREAKPOINTS.length - 1];
+
+        return breakpointSize;
     }
 
     function render() {
@@ -45,6 +62,9 @@ window.imageSizer = (function(containerSel, sidebar) {
             ".photo-thumbnail {" +
                 "width: " + widthPct + "%;"
             "}";
+
+        _$plusBtn.disabled = _imgPerRow === 1;
+        _$minusBtn.disabled = _imgPerRow === 10;
     }
 
     function persist() {

@@ -72,12 +72,12 @@ public class PhotosController : _BaseController
         return Json(Photo.MakeList(familyId, Url, dbPhotos));
     }
 
-    [Route("/Photos/{familyId}/Thumbnails/{date}/{size}/{filename}")]
-    public IActionResult Thumbnail(string familyId, string date, int size, string filename) {
+    [Route("/Photos/{familyId}/Thumbnails/{size}/{fileId}")]
+    public IActionResult Thumbnail(string familyId, int size, string fileId) {
         Family family = _families[familyId];
-        DateTime parsedDate = DateTime.Parse(date);
+        QueryPhoto photo = _libraryProvider.GetPhoto(family, fileId);
 
-        Thumbnail thumb = new Thumbnail(family, parsedDate, size, filename);
+        Thumbnail thumb = new Thumbnail(family, photo, size);
 
         return File(thumb.ThumbnailContents, thumb.ThumbnailMimeType);
     }

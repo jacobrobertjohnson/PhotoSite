@@ -1,16 +1,7 @@
 window.thumbnails = (function(containerSel, sizer, sidebar) {
     let _$container = document.querySelector(containerSel),
-        _thumbnails = [],
-        _imageSize = sizer.getHeight();
+        _thumbnails = [];
 
-    sidebar.subscribe(function() {
-        let newSize = sizer.getHeight();
-
-        if (newSize != _imageSize) {
-            _imageSize = newSize;
-            render();
-        }
-    });
     window.addEventListener("resize", render);
 
     function addPhotos(photos) {
@@ -27,7 +18,7 @@ window.thumbnails = (function(containerSel, sizer, sidebar) {
 
     function renderThumbnail(thumbInfo) {
         let $img = document.createElement("div"),
-            height = _imageSize;
+            height = sizer.getHeight();
 
         $img.classList.add("photo-thumbnail");
         $img.style.backgroundImage = "url(" + thumbInfo.thumbnailUrl.replace("[size]", height) + ")";

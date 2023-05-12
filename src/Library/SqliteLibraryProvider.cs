@@ -1,4 +1,5 @@
 using PhotoSite.Models;
+using Microsoft.Data.Sqlite;
 
 namespace PhotoSite.Library;
 
@@ -29,5 +30,23 @@ public class SqliteLibraryProvider : ILibraryProvider {
         });
 
         return photos;
+    }
+
+    public QueryPhoto GetPhoto(Family family, string photoId) {
+        QueryPhoto photo = new QueryPhoto();
+
+        _context.RunQuery(family, "SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE FileId = $fileId", command => {
+            command.Parameters.AddWithValue("$fileId", photoId).SqliteType = SqliteType.Text;
+        }, reader => {
+            int fileId = reader.GetOrdinal("FileId"),
+                dateTaken = reader.GetOrdinal("DateTaken"),
+                originalFilename = reader.GetOrdinal("OriginalFilename");
+
+            photo.Id = reader.GetString(fileId);
+            photo.DateTaken = reader.GetDateTime(dateTaken);
+            photo.Extension = Path.GetExtension(reader.GetString(originalFilename));
+        });
+
+        return photo;
     }
 }

@@ -4,20 +4,19 @@ namespace PhotoSite.Thumbnails;
 
 public class Thumbnail {
     readonly int[] _heightBreakpoints = new[] {
-        10,
         60,
-        120,
+        100,
         150,
         300,
         500
     };
 
-    public Thumbnail(Family family, DateTime date, int size, string filename) {
+    public Thumbnail(Family family, QueryPhoto photo, int size) {
         int targetSize = getNearestHeightBreakpoint(size);
-        string thumbnailPath = makeThumbnailPath(family, date, targetSize, filename);
+        string thumbnailPath = makeThumbnailPath(family, photo, targetSize);
 
         if (!File.Exists(thumbnailPath))
-            resizeAndCacheThumbnail(targetSize, makeFullSizePath(family, date, filename), thumbnailPath);
+            resizeAndCacheThumbnail(targetSize, makeFullSizePath(family, photo), thumbnailPath);
 
         ThumbnailContents = File.ReadAllBytes(thumbnailPath);
         ThumbnailMimeType = "image/jpeg";
@@ -30,22 +29,28 @@ public class Thumbnail {
         int? nearestBreakpoint = null;
 
         foreach (int breakpoint in _heightBreakpoints) {
-            if (size <= breakpoint)
+            if (size >= breakpoint)
                 nearestBreakpoint = breakpoint;
         }
 
-        return nearestBreakpoint ?? _heightBreakpoints.Last();
+        if (nearestBreakpoint == null)
+            if (size < _heightBreakpoints.First())
+                nearestBreakpoint = _heightBreakpoints.First();
+            else
+                nearestBreakpoint = _heightBreakpoints.Last();
+
+        return nearestBreakpoint.Value;
     }
 
-    string makeFullSizePath(Family family, DateTime date, string filename)
-        => makeImagePath(family.PhotoFilePath, date, filename);
+    string makeFullSizePath(Family family, QueryPhoto photo)
+        => makeImagePath(family.PhotoFilePath, photo);
 
-    string makeThumbnailPath(Family family, DateTime date, int targetSize, string filename)
-        => makeImagePath(Path.Combine(family.PhotoThumbnailPath, $"{targetSize}"), date, filename);
+    string makeThumbnailPath(Family family, QueryPhoto photo, int targetSize)
+        => makeImagePath(Path.Combine(family.PhotoThumbnailPath, $"{targetSize}"), photo);
 
-    string makeImagePath(string baseDir, DateTime date, string filename) {
-        string dirDate = date.ToString("yyyy-MM"),
-            fullFilename = $"{date:yyyy-MM-dd}_{filename}";
+    string makeImagePath(string baseDir, QueryPhoto photo) {
+        string dirDate = photo.DateTaken.ToString("yyyy-MM"),
+            fullFilename = $"{photo.DateTaken:yyyy-MM-dd}_{photo.Id}{photo.Extension}";
 
         return Path.Combine(baseDir, dirDate, fullFilename);
     }

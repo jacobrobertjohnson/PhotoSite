@@ -6,4 +6,5 @@ public interface ILibraryProvider {
     bool PhotosExist();
     bool VideosExist();
     List<QueryPhoto> GetPhotos(Family family);
+    QueryPhoto GetPhoto(Family family, string photoId);
 }
