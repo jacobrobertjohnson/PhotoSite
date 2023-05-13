@@ -2,12 +2,9 @@ window.imageSizer = (function(containerSel, sidebar) {
     const PERSIST_ID = "imgPerRow",
         PERSIST_VAL = localStorage.getItem(PERSIST_ID),
         HEIGHT_BREAKPOINTS = [
-            30,
-            60,
             100,
-            150,
-            300,
-            500
+            200,
+            300
         ];
 
     let _$container = document.querySelector(containerSel),
@@ -15,6 +12,7 @@ window.imageSizer = (function(containerSel, sidebar) {
         _$minusBtn = document.getElementById("zoom-minus"),
         _$styler = document.createElement("style"),
         _imgPerRow = PERSIST_VAL ? parseInt(PERSIST_VAL) : 4,
+        _realSize,
         _size;
 
     document.body.appendChild(_$styler);
@@ -32,22 +30,23 @@ window.imageSizer = (function(containerSel, sidebar) {
     update();
 
     function update() {
+        _realSize = _$container.clientWidth / _imgPerRow,
         _size = getHeightBreakpoint();
+
         render();
         persist();
     }
 
     function getHeightBreakpoint() {
-        let realSize = _$container.clientWidth / _imgPerRow,
-            breakpointSize = null;
+        let breakpointSize = null;
 
         for (let i = 0; i < HEIGHT_BREAKPOINTS.length; i++) {
-            if (realSize >= HEIGHT_BREAKPOINTS[i])
+            if (_realSize >= HEIGHT_BREAKPOINTS[i])
                 breakpointSize = HEIGHT_BREAKPOINTS[i];
         }
 
         if (!breakpointSize)
-            if (realSize < HEIGHT_BREAKPOINTS[0])
+            if (_realSize < HEIGHT_BREAKPOINTS[0])
                 breakpointSize = HEIGHT_BREAKPOINTS[0]
             else
                 breakpointSize = HEIGHT_BREAKPOINTS[HEIGHT_BREAKPOINTS.length - 1];
@@ -74,6 +73,12 @@ window.imageSizer = (function(containerSel, sidebar) {
     return {
         getHeight: function() {
             return _size;
+        },
+        getHeightInPx: function() {
+            return _realSize;
+        },
+        getImagesPerRow: function() {
+            return _imgPerRow;
         }
     };
 })("#thumbnails", window.sidebar);

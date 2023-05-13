@@ -20,6 +20,7 @@ window.thumbnails = (function(containerSel, sizer, sidebar) {
         let $img = document.createElement("div"),
             height = sizer.getHeight();
 
+        $img.id = thumbInfo.id;
         $img.classList.add("photo-thumbnail");
         $img.style.backgroundImage = "url(" + thumbInfo.thumbnailUrl.replace("[size]", height) + ")";
         $img.innerHTML = "&nbsp;";

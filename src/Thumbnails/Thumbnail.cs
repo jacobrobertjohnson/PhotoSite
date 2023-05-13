@@ -4,11 +4,9 @@ namespace PhotoSite.Thumbnails;
 
 public class Thumbnail {
     readonly int[] _heightBreakpoints = new[] {
-        60,
         100,
-        150,
+        200,
         300,
-        500
     };
 
     public Thumbnail(Family family, QueryPhoto photo, int size) {

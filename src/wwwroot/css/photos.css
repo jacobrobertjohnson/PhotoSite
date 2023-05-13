@@ -70,6 +70,20 @@ body.has-sidebar .sidebar{
     background-position: center;
     background-size: cover;
     aspect-ratio: 1;
+    position: relative;
+}
+
+.photo-thumbnail::after {
+    content: '';
+    aspect-ratio: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: url(/images/loading.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    z-index: -1;
 }
 
 .footer {
