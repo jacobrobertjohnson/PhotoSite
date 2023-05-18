@@ -28,7 +28,7 @@ public class Photo {
     public Photo() { }
 
     public Photo(string familyId, IUrlHelper url, QueryPhoto dbPhoto) {
-        ThumbnailUrl = $"/Photos/{familyId}/Thumbnails/[size]/{dbPhoto.Id}";
+        ThumbnailUrl = $"/Photos/{familyId}/Thumbnails/[size]/{dbPhoto.Id}{dbPhoto.Extension}";
         Id = dbPhoto.Id;
     }
 

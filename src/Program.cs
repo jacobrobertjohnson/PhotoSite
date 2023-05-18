@@ -14,6 +14,7 @@ builder.Configuration.Bind("AppSettings", appSettings);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddResponseCaching();
 
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
@@ -59,6 +60,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseResponseCaching();
 app.UseAuthentication();
 app.UseAuthorization();
 
