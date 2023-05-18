@@ -1,16 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace PhotoSite.Models;
 
+public class Photos_Index_AspModel : ModelBase {
+    public Photos_Index_AspModel(List<Photos_Index_SidebarItem> sidebar, object vueModel) : base(vueModel)
+    {
+        Sidebar = sidebar;
+    }
+
+    public List<Photos_Index_SidebarItem> Sidebar { get; set; } = new List<Photos_Index_SidebarItem>();
+}
+
 public class Photos_Index_VueModel {
     public string FamilyId { get; set; }
-    public List<Photos_Index_SidebarItem> Sidebar { get; set; } = new List<Photos_Index_SidebarItem>();
 }
 
 public class Photos_Index_SidebarItem {
     public string Label { get; set; }
-    public string PhotoUrl { get; set; }
+    public string Url { get; set; }
+    public List<Photos_Index_SidebarItem> Children { get; set; } = null;
 }
 
 public class QueryPhoto {

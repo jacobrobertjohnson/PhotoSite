@@ -29,37 +29,53 @@ public class PhotosController : _BaseController
         _libraryProvider = dependencies.GetService<ILibraryProvider>();
     }
 
-    [Route("/Photos/{familyId}")]
-    public IActionResult Index(string familyId) {
+    [Route("/Photos/{familyId}/{year?}/{month?}")]
+    public IActionResult Index(string familyId, int year = -1, int month = -1) {
         IActionResult response = RedirectToAction("Index", "Home");
 
         if (_families.ContainsKey(familyId))
-            response = View(new ModelBase(new Photos_Index_VueModel() {
-                FamilyId = familyId,
-                Sidebar = new List<Photos_Index_SidebarItem>() {
-                    new Photos_Index_SidebarItem() { Label = "All Photos & Videos" },
-                    new Photos_Index_SidebarItem() { Label = "All Photos" },
-                    new Photos_Index_SidebarItem() { Label = "All Videos" },
-                }
+            response = View(new Photos_Index_AspModel(makeSidebar(familyId), new Photos_Index_VueModel() {
+                FamilyId = familyId
             }));
-
 
         return response;
     }
 
-    List<Photos_Index_SidebarItem> makeSidebar() {
+    List<Photos_Index_SidebarItem> makeSidebar(string familyId) {
         var sidebar = new List<Photos_Index_SidebarItem>();
         bool photosExist = _libraryProvider.PhotosExist(),
             videosExist = _libraryProvider.VideosExist();
 
-        if (photosExist && videosExist)
-            sidebar.Add(new Photos_Index_SidebarItem() { Label = "All Photos & Videos" });
+        // if (photosExist && videosExist)
+        //     sidebar.Add(new Photos_Index_SidebarItem() { Label = "All Photos & Videos" });
 
-        if (photosExist)
-            sidebar.Add(new Photos_Index_SidebarItem() { Label = "All Photos" });
+        // if (photosExist)
+        //     sidebar.Add(new Photos_Index_SidebarItem() { Label = "All Photos" });
 
-        if (videosExist)
-            sidebar.Add(new Photos_Index_SidebarItem() { Label = "All Videos" });
+        // if (videosExist)
+        //     sidebar.Add(new Photos_Index_SidebarItem() { Label = "All Videos" });
+
+        sidebar.AddRange(
+            _libraryProvider.GetPhotoDates(_families[familyId])
+                .GroupBy(year => year.Year)
+                .Select(year => new Photos_Index_SidebarItem() {
+                    Label = $"{year.Key}",
+                    Url = Url.Action("Index", new {
+                        year = year.Key
+                    }),
+                    Children = year.GroupBy(month => month.Month)
+                        .OrderByDescending(month => month.Key)
+                        .Select(month => new Photos_Index_SidebarItem() {
+                            Label = DateTime.Parse($"{year.Key}-{month.Key}").ToString("MMMM"),
+                            Url = Url.Action("Index", new {
+                                year = year.Key,
+                                month = month.Key
+                            })
+                        })
+                        .ToList()
+                })
+                .OrderByDescending(year => year.Label)
+        );
 
         return sidebar;
     }

@@ -43,8 +43,8 @@
     top: var(--header-height);
     left: 0;
     height: calc(100vh - var(--header-height));
-    overflow-y: hidden;
-    overflow-x: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     width: 0;
     transition: width var(--sidebar-width-transition-time) ease-in-out;
 }

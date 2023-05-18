@@ -3,7 +3,7 @@
 	ViewBag.ScriptBundle = "~/js/photos.min.js";
 }
 
-@model PhotoSite.Models.ModelBase;
+@model PhotoSite.Models.Photos_Index_AspModel;
 
 <header class="site-header">
 	<a class="sidebar-toggler" id="sidebar-toggler">☰</a>
@@ -12,8 +12,26 @@
 </header>
 
 <nav id="sidebar" class="sidebar">
-	<ul class="sidebar-links">
-		<li v-for="link in Sidebar">{{ link.Label }}</li>
+	<ul class="sidebar-links" id="nav">
+		@foreach (var year in Model.Sidebar) {
+			<text>
+				<li>
+					<a href="@year.Url">@year.Label</a>
+
+					@if (year.Children != null && year.Children.Count > 0) {
+						<text>
+							<ul>
+								@foreach (var month in year.Children) {
+									<text>
+										<li><a href="@month.Url">@month.Label</a></li>
+									</text>
+								}
+							</ul>
+						</text>
+					}
+				</li>
+			</text>
+		}
 	</ul>
 </nav>
 

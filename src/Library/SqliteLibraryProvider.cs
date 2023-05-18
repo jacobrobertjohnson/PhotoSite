@@ -49,4 +49,16 @@ public class SqliteLibraryProvider : ILibraryProvider {
 
         return photo;
     }
+
+    public List<DateTime> GetPhotoDates(Family family) {
+        var dates = new List<DateTime>();
+
+        _context.RunQuery(family, "SELECT DISTINCT DateTaken FROM Photos ORDER BY DateTaken DESC", reader => {
+            int dateTaken = reader.GetOrdinal("DateTaken");
+
+            dates.Add(reader.GetDateTime(dateTaken));
+        });
+
+        return dates;
+    }
 }
