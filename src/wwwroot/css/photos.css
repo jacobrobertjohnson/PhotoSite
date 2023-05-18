@@ -52,6 +52,7 @@
 body.has-sidebar .sidebar{
     width: var(--sidebar-width);
     transition: width var(--sidebar-width-transition-time) ease-in-out;
+    z-index: 1;
 }
 
 .photo-thumbnails {
