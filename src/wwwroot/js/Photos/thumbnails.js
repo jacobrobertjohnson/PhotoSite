@@ -1,40 +1,22 @@
 window.thumbnails = (function(containerSel, sizer, sidebar) {
-    let _$container = document.querySelector(containerSel),
-        _thumbnails = [];
+    let _$container = document.querySelector(containerSel);
 
     window.addEventListener("resize", render);
 
-    function addPhotos(photos) {
-        _thumbnails = photos;
-    }
-
     function render() {
-        _$container.innerHTML = "";
+        let height = sizer.getHeight(),
+            images = document.getElementsByClassName("photo-thumbnail"),
+            $img,
+            urlTemplate;
 
-        for (let i = 0; i < 100 /*_thumbnails.length*/; i++) {
-            renderThumbnail(_thumbnails[i]);
+        for (let i = 0; i < images.length; i++) {
+            $img = images[i];
+            urlTemplate = $img.getAttribute("data-background-url");
+            $img.style.backgroundImage = "url(" + urlTemplate.replace("[size]", height) + ")";
         }
-    }
-
-    function renderThumbnail(thumbInfo) {
-        let $img = document.createElement("div"),
-            height = sizer.getHeight();
-
-        $img.id = thumbInfo.id;
-        $img.classList.add("photo-thumbnail");
-        $img.style.backgroundImage = "url(" + thumbInfo.thumbnailUrl.replace("[size]", height) + ")";
-        $img.innerHTML = "&nbsp;";
-        
-        _$container.appendChild($img);
     }
 
     return {
-        get: async function(familyId) {
-            const response = await fetch("/Photos/" + familyId + "/Thumbnails"),
-                photos = await response.json();
-
-            addPhotos(photos);
-            render();
-        }
+        render: render
     }
 })("#thumbnails", window.imageSizer, window.sidebar);

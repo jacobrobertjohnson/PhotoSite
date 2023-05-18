@@ -32,11 +32,23 @@ public class PhotosController : _BaseController
     [Route("/Photos/{familyId}/{year?}/{month?}")]
     public IActionResult Index(string familyId, int year = -1, int month = -1) {
         IActionResult response = RedirectToAction("Index", "Home");
+        string date = "";
 
-        if (_families.ContainsKey(familyId))
-            response = View(new Photos_Index_AspModel(makeSidebar(familyId), new Photos_Index_VueModel() {
+        if (_families.ContainsKey(familyId)) {
+            if (year > -1) {
+                date = $"%/{year}%";
+
+                if (month > -1)
+                    date = $"{month}/" + date;
+            }
+
+            response = View(new Photos_Index_AspModel(new Photos_Index_VueModel() {
                 FamilyId = familyId
-            }));
+            }) {
+                Sidebar = makeSidebar(familyId),
+                Thumbnails = Thumbnails(familyId, date)
+            });
+        }
 
         return response;
     }
@@ -80,12 +92,11 @@ public class PhotosController : _BaseController
         return sidebar;
     }
 
-    [Route("/Photos/{familyId}/Thumbnails")]
-    public IActionResult Thumbnails(string familyId) {
+    List<Photo> Thumbnails(string familyId, string date) {
         var family = _families[familyId];
-        var dbPhotos = _libraryProvider.GetPhotos(family);
+        var dbPhotos = _libraryProvider.GetPhotos(family, date);
 
-        return Json(Photo.MakeList(familyId, Url, dbPhotos));
+        return Photo.MakeList(familyId, Url, dbPhotos);
     }
 
     [Route("/Photos/{familyId}/Thumbnails/{size}/{filename}")]

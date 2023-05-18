@@ -37,7 +37,11 @@
 
 <section class="photo-date">
 	<div class="photo-thumbnails" id="thumbnails">
-		Loading...
+		@foreach (var thumbnail in Model.Thumbnails) {
+			<text>
+				<div class="photo-thumbnail" id="@thumbnail.Id" data-background-url="@thumbnail.ThumbnailUrl">&nbsp;</div>
+			</text>
+		}
 	</div>
 </section>
 
@@ -48,10 +52,7 @@
 @section Scripts {
 	<script>
 		(function() {
-			const _vm = @Html.Raw(@Model.VueModel), 
-				_familyId = _vm.FamilyId;
-
-			thumbnails.get(_familyId);
+			thumbnails.render();
 		})();
 	</script>
 }

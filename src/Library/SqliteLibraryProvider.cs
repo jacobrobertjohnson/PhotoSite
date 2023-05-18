@@ -14,20 +14,21 @@ public class SqliteLibraryProvider : ILibraryProvider {
     public bool PhotosExist() => true;
     public bool VideosExist() => true;
 
-    public List<QueryPhoto> GetPhotos(Family family) {
+    public List<QueryPhoto> GetPhotos(Family family, string date) {
         var photos = new List<QueryPhoto>();
 
-        _context.RunQuery(family, "SELECT FileId, DateTaken, OriginalFilename FROM Photos", reader => {
-            int fileId = reader.GetOrdinal("FileId"),
-                dateTaken = reader.GetOrdinal("DateTaken"),
-                originalFilename = reader.GetOrdinal("OriginalFilename");
+        _context.RunQuery(family, $"SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE DateTaken LIKE '{date}'",
+            reader => {
+                int fileId = reader.GetOrdinal("FileId"),
+                    dateTaken = reader.GetOrdinal("DateTaken"),
+                    originalFilename = reader.GetOrdinal("OriginalFilename");
 
-            photos.Add(new QueryPhoto() {
-                Id = reader.GetString(fileId),
-                DateTaken = reader.GetDateTime(dateTaken),
-                Extension = Path.GetExtension(reader.GetString(originalFilename))
+                photos.Add(new QueryPhoto() {
+                    Id = reader.GetString(fileId),
+                    DateTaken = reader.GetDateTime(dateTaken),
+                    Extension = Path.GetExtension(reader.GetString(originalFilename))
+                });
             });
-        });
 
         return photos;
     }

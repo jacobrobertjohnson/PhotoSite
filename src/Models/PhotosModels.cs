@@ -3,12 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace PhotoSite.Models;
 
 public class Photos_Index_AspModel : ModelBase {
-    public Photos_Index_AspModel(List<Photos_Index_SidebarItem> sidebar, object vueModel) : base(vueModel)
-    {
-        Sidebar = sidebar;
-    }
-
+    public Photos_Index_AspModel(object vueModel) : base(vueModel) { }
     public List<Photos_Index_SidebarItem> Sidebar { get; set; } = new List<Photos_Index_SidebarItem>();
+    public List<Photo> Thumbnails { get; set; } = new List<Photo>();
 }
 
 public class Photos_Index_VueModel {
