@@ -46,7 +46,8 @@ public class PhotosController : _BaseController
                 FamilyId = familyId
             }) {
                 Sidebar = makeSidebar(familyId),
-                Thumbnails = Thumbnails(familyId, date)
+                Thumbnails = Thumbnails(familyId, date),
+                FamilyId = familyId
             });
         }
 
@@ -108,6 +109,27 @@ public class PhotosController : _BaseController
 
         Thumbnail thumb = new Thumbnail(family, photo, size);
 
-        return File(thumb.ThumbnailContents, thumb.ThumbnailMimeType);
+        return File(thumb.Contents, thumb.MimeType);
+    }
+
+    [Route("/Photos/{familyId}/FullSize/{filename}")]
+    public IActionResult FullSize(string familyId, string filename) {
+        Family family = _families[familyId];
+        string fileId = Path.GetFileNameWithoutExtension(filename);
+        QueryPhoto photo = _libraryProvider.GetPhoto(family, fileId);
+        PhotoReader contents = new PhotoReader(family, photo);
+
+        return File(contents.Contents, contents.MimeType);
+    }
+
+    [Route("/Photos/{familyId}/Viewer/{filename}")]
+    public IActionResult Viewer(string familyId, string filename) {
+        Family family = _families[familyId];
+        string fileId = Path.GetFileNameWithoutExtension(filename);
+        QueryPhoto photo = _libraryProvider.GetPhoto(family, fileId);
+
+        return View(new Photos_Viewer_AspModel(new object()) {
+            PhotoUrl = $"/Photos/{family.Id}/FullSize/{photo.Id}{photo.Extension}"
+        });
     }
 }

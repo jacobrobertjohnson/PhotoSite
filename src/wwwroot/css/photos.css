@@ -34,7 +34,6 @@
     font-size: 2rem;
 }
 
-
 .sidebar {
     background: whitesmoke;
     border-right: 1px solid lightgray;
@@ -87,6 +86,29 @@ body.has-sidebar .sidebar{
     z-index: -1;
 }
 
+.photo-thumbnail a {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    text-decoration: none;
+}
+
+.photo-thumbnail .photo-thumbnail-select {
+    position: absolute;
+    display: none;
+    height: 1.25rem;
+    width: 1.25rem;
+}
+
+.photo-thumbnail:hover .photo-thumbnail-select {
+    display: unset;
+}
+.photo-thumbnail-select:checked {
+    display: unset;
+}
+
 .footer {
     position: fixed;
     bottom: 0;
@@ -111,6 +133,35 @@ body.has-sidebar .sidebar{
     margin: 0 0.5rem;
 }
 
+.photo-viewer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background: black;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: var(--header-height);
+    bottom: 0;
+}
+
+.close-photo-viewer {
+    color: white;
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 1.5rem;
+    padding: .5rem 1rem;
+    cursor: pointer;
+}
+
+.close-photo-viewer:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
 @media screen and (min-width: 480px) {
     body {
         padding-top: calc(var(--header-height) + var(--photo-gutter));
@@ -128,6 +179,11 @@ body.has-sidebar .sidebar{
     }
 
     body.has-sidebar .footer {
+        left: var(--sidebar-width);
+        transition: left var(--sidebar-width-transition-time) ease-in-out;
+    }
+
+    body.has-sidebar .photo-viewer {
         left: var(--sidebar-width);
         transition: left var(--sidebar-width-transition-time) ease-in-out;
     }

@@ -1,0 +1,27 @@
+@{
+	Layout = "_PhotoLayout";
+}
+
+@model PhotoSite.Models.Photos_Viewer_AspModel;
+
+<div class="photo-viewer" style="background-image: url('@Model.PhotoUrl');">
+	<div id="close-photo-viewer" class="close-photo-viewer">x</div>
+</div>
+
+<style>
+	body {
+		overflow: hidden;
+	}
+</style>
+
+@section Scripts {
+	<script>
+		(function() {
+			let _$closeBtn = document.getElementById("close-photo-viewer");
+
+			_$closeBtn.addEventListener("click", function() {
+				window.close();
+			})
+		})();
+	</script>
+}

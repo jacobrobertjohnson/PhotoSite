@@ -2,26 +2,21 @@ using PhotoSite.Models;
 
 namespace PhotoSite.Thumbnails;
 
-public class Thumbnail {
+public class Thumbnail : PhotoReader {
     readonly int[] _heightBreakpoints = new[] {
         100,
         200,
         300,
     };
 
-    public Thumbnail(Family family, QueryPhoto photo, int size) {
+    public Thumbnail(Family family, QueryPhoto photo, int size) : base(family, photo) {
         int targetSize = getNearestHeightBreakpoint(size);
-        string thumbnailPath = makeThumbnailPath(family, photo, targetSize);
 
-        if (!File.Exists(thumbnailPath))
-            resizeAndCacheThumbnail(targetSize, makeFullSizePath(family, photo), thumbnailPath);
+        _photoPath = makeThumbnailPath(family, photo, targetSize);
 
-        ThumbnailContents = File.ReadAllBytes(thumbnailPath);
-        ThumbnailMimeType = "image/jpeg";
+        if (!File.Exists(_photoPath))
+            resizeAndCacheThumbnail(targetSize);
     }
-
-    public byte[] ThumbnailContents { get; private set; }
-    public string ThumbnailMimeType { get; private set; } 
 
     int getNearestHeightBreakpoint(int size) {
         int? nearestBreakpoint = null;
@@ -40,32 +35,22 @@ public class Thumbnail {
         return nearestBreakpoint.Value;
     }
 
-    string makeFullSizePath(Family family, QueryPhoto photo)
-        => makeImagePath(family.PhotoFilePath, photo);
-
     string makeThumbnailPath(Family family, QueryPhoto photo, int targetSize)
         => makeImagePath(Path.Combine(family.PhotoThumbnailPath, $"{targetSize}"), photo);
 
-    string makeImagePath(string baseDir, QueryPhoto photo) {
-        string dirDate = photo.DateTaken.ToString("yyyy-MM"),
-            fullFilename = $"{photo.DateTaken:yyyy-MM-dd}_{photo.Id}{photo.Extension}";
-
-        return Path.Combine(baseDir, dirDate, fullFilename);
-    }
-
-    void resizeAndCacheThumbnail(int newHeight, string sourcePath, string targetPath) {
-        string targetDir = Path.GetDirectoryName(targetPath);
+    void resizeAndCacheThumbnail(int newHeight) {
+        string targetDir = Path.GetDirectoryName(_photoPath);
 
         if (!Directory.Exists(targetDir))
             Directory.CreateDirectory(targetDir);
 
-        using (var stream = new FileStream(sourcePath, FileMode.Open))
+        using (var stream = new FileStream(_fullsizePath, FileMode.Open))
         using (var image = Image.Load(stream))
         {
             int width = (image.Width * newHeight) / image.Height;
             
             image.Mutate(x => x.Resize(width, newHeight, KnownResamplers.Lanczos3));
-            image.Save(targetPath);
+            image.Save(_photoPath);
         }
     }
 }

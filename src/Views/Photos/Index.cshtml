@@ -1,17 +1,10 @@
 @{
-	Layout = "_Layout";
-	ViewBag.ScriptBundle = "~/js/photos.min.js";
+	Layout = "_PhotoLayout";
 }
 
 @model PhotoSite.Models.Photos_Index_AspModel;
 
-<header class="site-header">
-	<a class="sidebar-toggler" id="sidebar-toggler">☰</a>
-	
-	<a href="@Url.Action("Index", "Home")">Home</a>
-</header>
-
-<nav id="sidebar" class="sidebar">
+@section Sidebar {
 	<ul class="sidebar-links" id="nav">
 		@foreach (var year in Model.Sidebar) {
 			<text>
@@ -33,21 +26,25 @@
 			</text>
 		}
 	</ul>
-</nav>
+}
 
 <section class="photo-date">
 	<div class="photo-thumbnails" id="thumbnails">
 		@foreach (var thumbnail in Model.Thumbnails) {
 			<text>
-				<div class="photo-thumbnail" id="@thumbnail.Id" data-background-url="@thumbnail.ThumbnailUrl">&nbsp;</div>
+				<div class="photo-thumbnail" id="@thumbnail.Id" data-background-url="@thumbnail.ThumbnailUrl">
+					<a href="@thumbnail.ViewerUrl" target="_blank">&nbsp;</a>
+					<input type="checkbox" id="Select_@thumbnail.Id" class="photo-thumbnail-select" />
+
+				</div>
 			</text>
 		}
 	</div>
 </section>
 
-<footer class="footer">
+@section Footer {
 	<button class="zoom-button" id="zoom-minus">-</button> Zoom <button class="zoom-button" id="zoom-plus">+</button>
-</footer>
+}
 
 @section Scripts {
 	<script>
