@@ -163,6 +163,7 @@ body.has-sidebar .sidebar{
     font-size: 1.5rem;
     padding: .5rem 1rem;
     cursor: pointer;
+    text-shadow: 0 0 5px black;
 }
 
 .close-photo-viewer:hover {
