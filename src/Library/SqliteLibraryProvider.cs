@@ -17,7 +17,7 @@ public class SqliteLibraryProvider : ILibraryProvider {
     public List<QueryPhoto> GetPhotos(Family family, string date) {
         var photos = new List<QueryPhoto>();
 
-        _context.RunQuery(family, $"SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE DateTaken LIKE '{date}'",
+        _context.RunQuery(family, $"SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE DateTaken LIKE '{date}' ORDER BY DateTaken DESC",
             reader => {
                 int fileId = reader.GetOrdinal("FileId"),
                     dateTaken = reader.GetOrdinal("DateTaken"),
