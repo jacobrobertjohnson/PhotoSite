@@ -1,8 +1,10 @@
 window.sidebar = (function() {
     const PERSIST_ID = "showSidebar",
-        PERSIST_VAL = localStorage.getItem(PERSIST_ID);
+        PERSIST_VAL = localStorage.getItem(PERSIST_ID),
+        $MOBILE_DETECTOR = document.getElementById("mobile-detector"),
+        IS_MOBILE = window.getComputedStyle($MOBILE_DETECTOR).display != "none";
 
-    let _showSidebar = PERSIST_VAL ? PERSIST_VAL === "true" : window.innerWidth > 480,
+    let _showSidebar = !IS_MOBILE && PERSIST_VAL === "true",
         _$toggler = document.getElementById("sidebar-toggler"),
         _subscriptions = [];
 

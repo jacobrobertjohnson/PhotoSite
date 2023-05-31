@@ -7,6 +7,12 @@
     --zoom-button-size: 2rem;
 }
 
+#mobile-detector {
+    display: block;
+    width: 0;
+    height: 0;
+}
+
 .site-header {
     background: darkslategray;
     color: white;
@@ -164,6 +170,10 @@ body.has-sidebar .sidebar{
 }
 
 @media screen and (min-width: 480px) {
+    #mobile-detector {
+        display: none;
+    }
+
     body {
         padding-top: calc(var(--header-height) + var(--photo-gutter));
         padding-left: var(--photo-gutter);
