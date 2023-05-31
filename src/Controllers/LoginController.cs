@@ -31,8 +31,8 @@ public class LoginController : Controller
             var claims = new List<Claim>() {
                 new Claim("user", "jake"),
                 new Claim("role", "admin"),
-                new Claim("families", "Salo,JohnsonJake,JohnsonJeff"),
-                new Claim("photosFamilies", "Salo,JohnsonJake")
+                new Claim("families", "Salo,JohnsonJake,JohnsonJeff,Everett"),
+                new Claim("photosFamilies", "Salo,JohnsonJake,JohnsonJeff,Everett")
             };
 
             var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies", "user", "role"));
