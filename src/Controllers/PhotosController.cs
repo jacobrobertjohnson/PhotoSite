@@ -117,10 +117,14 @@ public class PhotosController : _BaseController
         Family family = _families[familyId];
         string fileId = Path.GetFileNameWithoutExtension(filename);
         QueryPhoto photo = _libraryProvider.GetPhoto(family, fileId);
-        PhotoReader contents = new PhotoReader(family, photo);
+        PhotoReader contents;
 
-        if (download)
+        if (download) {
+            contents = new PhotoReader(family, photo);
             Response.Headers.ContentDisposition = "attachment; filename=" + photo.OriginalFilename;
+        } else {
+            contents = new Thumbnail(family, photo, 1080);
+        }
 
         return File(contents.Contents, contents.MimeType);
     }

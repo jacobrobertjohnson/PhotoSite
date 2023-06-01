@@ -7,6 +7,7 @@ public class Thumbnail : PhotoReader {
         100,
         200,
         300,
+        1080
     };
 
     public Thumbnail(Family family, QueryPhoto photo, int size) : base(family, photo) {
