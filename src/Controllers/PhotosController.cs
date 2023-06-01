@@ -125,11 +125,31 @@ public class PhotosController : _BaseController
     [Route("/Photos/{familyId}/Viewer/{filename}")]
     public IActionResult Viewer(string familyId, string filename) {
         Family family = _families[familyId];
-        string fileId = Path.GetFileNameWithoutExtension(filename);
+        string fileId = Path.GetFileNameWithoutExtension(filename),
+            prevPhotoUrl = null,
+            nextPhotoUrl = null;
         QueryPhoto photo = _libraryProvider.GetPhoto(family, fileId);
+        List<QueryPhoto> allPhotos = _libraryProvider.GetPhotos(family, $"{photo.DateTaken.Month}/%/{photo.DateTaken.Year}%");
+
+        for (int i = 0; i < allPhotos.Count; i++) {
+            if (allPhotos[i].Id == fileId) {
+                if (i > 0)
+                    prevPhotoUrl = makeViewerUrl(family.Id, allPhotos[i - 1]);
+                if (i < allPhotos.Count - 1)
+                    nextPhotoUrl = makeViewerUrl(family.Id, allPhotos[i + 1]);
+            }
+        }
 
         return View(new Photos_Viewer_AspModel(new object()) {
-            PhotoUrl = $"/Photos/{family.Id}/FullSize/{photo.Id}{photo.Extension}"
+            PhotoUrl = makePhotoUrl(family.Id, photo),
+            PrevPhotoUrl = prevPhotoUrl,
+            NextPhotoUrl = nextPhotoUrl
         });
     }
+
+    string makePhotoUrl(string familyId, QueryPhoto photo)
+        => $"/Photos/{familyId}/FullSize/{photo.Id}{photo.Extension}";  
+
+    string makeViewerUrl(string familyId, QueryPhoto photo)
+        => $"/Photos/{familyId}/Viewer/{photo.Id}{photo.Extension}";  
 }

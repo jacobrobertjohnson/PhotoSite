@@ -15,6 +15,9 @@ window.imageSizer = (function(containerSel, sidebar) {
         _realSize,
         _size;
 
+    if (!_$plusBtn)
+        return;
+
     document.body.appendChild(_$styler);
 
     _$plusBtn.addEventListener("click", function() {

@@ -5,6 +5,18 @@
 @model PhotoSite.Models.Photos_Viewer_AspModel;
 
 <div class="photo-viewer" style="background-image: url('@Model.PhotoUrl');">
+	@if (Model.PrevPhotoUrl != null) {
+		<text>
+			<a href="@Model.PrevPhotoUrl" class="photo-viewer-adjacent photo-viewer-prev" id="prev-photo">&lt;</a>
+		</text>
+	}
+
+	@if (Model.NextPhotoUrl != null) {
+		<text>
+			<a href="@Model.NextPhotoUrl" class="photo-viewer-adjacent photo-viewer-next" id="next-photo">&gt;</a>
+		</text>
+	}
+
 	<div id="close-photo-viewer" class="close-photo-viewer">x</div>
 </div>
 
@@ -17,11 +29,52 @@
 @section Scripts {
 	<script>
 		(function() {
-			let _$closeBtn = document.getElementById("close-photo-viewer");
+			const LEFT_KEY = 37,
+				RIGHT_KEY = 39;
+
+			let _$closeBtn = document.getElementById("close-photo-viewer"),
+				_$prevBtn = document.getElementById("prev-photo"),
+				_$nextBtn = document.getElementById("next-photo"),
+				_touchStartX = 0,
+				_touchEndX = 0;
 
 			_$closeBtn.addEventListener("click", function() {
 				window.close();
 			})
+
+			document.addEventListener("keyup", function(e) {
+				if (e.which === LEFT_KEY)
+					goToPrevPhoto();
+				else if (e.which === RIGHT_KEY)
+					goToNextPhoto();
+			});
+
+
+			document.addEventListener('touchstart', function(e) {
+				_touchStartX = e.changedTouches[0].screenX
+			});
+
+			document.addEventListener('touchend', function(e) {
+				_touchEndX = e.changedTouches[0].screenX
+				checkDirection()
+			});
+
+			function checkDirection() {
+				if (_touchStartX > _touchEndX)
+					goToNextPhoto();
+				else if (_touchStartX < _touchEndX)
+					goToPrevPhoto();
+			}
+
+			function goToPrevPhoto() {
+				if (_$prevBtn)
+					_$prevBtn.click();
+			}
+
+			function goToNextPhoto() {
+				if (_$nextBtn)
+					_$nextBtn.click();
+			}
 		})();
 	</script>
 }
