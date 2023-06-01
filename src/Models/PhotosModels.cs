@@ -23,6 +23,7 @@ public class QueryPhoto {
     public string Id { get; set; }
     public string Extension { get; set; }
     public DateTime DateTaken { get; set; }
+    public string OriginalFilename { get; internal set; }
 }
 
 public class PhotoDates {

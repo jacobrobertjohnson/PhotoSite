@@ -23,10 +23,13 @@ public class SqliteLibraryProvider : ILibraryProvider {
                     dateTaken = reader.GetOrdinal("DateTaken"),
                     originalFilename = reader.GetOrdinal("OriginalFilename");
 
+                string filename = reader.GetString(originalFilename);
+
                 photos.Add(new QueryPhoto() {
                     Id = reader.GetString(fileId),
                     DateTaken = reader.GetDateTime(dateTaken),
-                    Extension = Path.GetExtension(reader.GetString(originalFilename))
+                    OriginalFilename = filename,
+                    Extension = Path.GetExtension(filename)
                 });
             });
 
@@ -43,9 +46,12 @@ public class SqliteLibraryProvider : ILibraryProvider {
                 dateTaken = reader.GetOrdinal("DateTaken"),
                 originalFilename = reader.GetOrdinal("OriginalFilename");
 
+            string filename = reader.GetString(originalFilename);
+
             photo.Id = reader.GetString(fileId);
             photo.DateTaken = reader.GetDateTime(dateTaken);
-            photo.Extension = Path.GetExtension(reader.GetString(originalFilename));
+            photo.Extension = Path.GetExtension(filename);
+            photo.OriginalFilename = filename;
         });
 
         return photo;

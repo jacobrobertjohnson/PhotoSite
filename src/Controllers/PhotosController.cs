@@ -113,11 +113,14 @@ public class PhotosController : _BaseController
     }
 
     [Route("/Photos/{familyId}/FullSize/{filename}")]
-    public IActionResult FullSize(string familyId, string filename) {
+    public IActionResult FullSize(string familyId, string filename, bool download = false) {
         Family family = _families[familyId];
         string fileId = Path.GetFileNameWithoutExtension(filename);
         QueryPhoto photo = _libraryProvider.GetPhoto(family, fileId);
         PhotoReader contents = new PhotoReader(family, photo);
+
+        if (download)
+            Response.Headers.ContentDisposition = "attachment; filename=" + photo.OriginalFilename;
 
         return File(contents.Contents, contents.MimeType);
     }
