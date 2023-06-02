@@ -17,7 +17,7 @@ public class SqliteLibraryProvider : ILibraryProvider {
     public List<QueryPhoto> GetPhotos(Family family, string date) {
         var photos = new List<QueryPhoto>();
 
-        _context.RunQuery(family, $"SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE DateTaken LIKE '{date}' ORDER BY DateTaken DESC",
+        _context.RunQuery(family, $"SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE Deleted = 0 AND DateTaken LIKE '{date}' ORDER BY DateTaken DESC",
             reader => {
                 int fileId = reader.GetOrdinal("FileId"),
                     dateTaken = reader.GetOrdinal("DateTaken"),
@@ -39,7 +39,7 @@ public class SqliteLibraryProvider : ILibraryProvider {
     public QueryPhoto GetPhoto(Family family, string photoId) {
         QueryPhoto photo = new QueryPhoto();
 
-        _context.RunQuery(family, "SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE FileId = $fileId", command => {
+        _context.RunQuery(family, "SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE Deleted = 0 AND FileId = $fileId", command => {
             command.Parameters.AddWithValue("$fileId", photoId).SqliteType = SqliteType.Text;
         }, reader => {
             int fileId = reader.GetOrdinal("FileId"),
@@ -60,12 +60,19 @@ public class SqliteLibraryProvider : ILibraryProvider {
     public List<DateTime> GetPhotoDates(Family family) {
         var dates = new List<DateTime>();
 
-        _context.RunQuery(family, "SELECT DISTINCT DateTaken FROM Photos ORDER BY DateTaken DESC", reader => {
+        _context.RunQuery(family, "SELECT DISTINCT DateTaken FROM Photos WHERE Deleted = 0 ORDER BY DateTaken DESC", reader => {
             int dateTaken = reader.GetOrdinal("DateTaken");
 
             dates.Add(reader.GetDateTime(dateTaken));
         });
 
         return dates;
+    }
+
+    public void Delete(Family family, string fileId) {
+        _context.RunQuery(family, "UPDATE Photos SET Deleted = 1 WHERE FileId = $fileId",
+            command => command.Parameters.AddWithValue("$fileId", fileId).SqliteType = SqliteType.Text,
+            reader => { }
+        );
     }
 }

@@ -23,4 +23,18 @@ public class PhotoReader {
 
         return Path.Combine(baseDir, dirDate, fullFilename);
     }
+
+    public void Delete() => delete(_photoPath);
+
+    protected void delete(string photoPath) {
+        File.Delete(photoPath);
+        deleteFolderIfEmpty(_photoPath);
+    }
+
+    private void deleteFolderIfEmpty(string photoPath) {
+        string dirName = Path.GetDirectoryName(photoPath);
+        
+        if (Directory.GetFileSystemEntries(dirName).Count() == 0)
+            Directory.Delete(dirName);
+    }
 }

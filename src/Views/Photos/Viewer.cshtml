@@ -1,5 +1,9 @@
 @{
 	Layout = "_PhotoLayout";
+
+	string deleteUrl = Url.Action("DeletePhotos", new {
+		familyId = Model.FamilyId
+	});
 }
 
 @model PhotoSite.Models.Photos_Viewer_AspModel;
@@ -27,16 +31,21 @@
 </style>
 
 @section Footer {
-	<a href="@(@Model.PhotoUrl)?download=true">Save</a>
+	<a href="@(@Model.PhotoUrl)?download=true">
+		<button type="button">💾 Save</button>
+	</a>
+	<button type="button" id="delete-photo">🗑️ Delete</button>
 }
 
 @section Scripts {
 	<script>
 		(function() {
-			const LEFT_KEY = 37,
+			const FILENAME = "@Model.Filename",
+				LEFT_KEY = 37,
 				RIGHT_KEY = 39;
 
 			let _$closeBtn = document.getElementById("close-photo-viewer"),
+				_$deleteBtn = document.getElementById("delete-photo"),
 				_$prevBtn = document.getElementById("prev-photo"),
 				_$nextBtn = document.getElementById("next-photo"),
 				_touchStartX = 0,
@@ -45,6 +54,11 @@
 			_$closeBtn.addEventListener("click", function() {
 				window.close();
 			})
+
+			_$deleteBtn.addEventListener("click", function() {
+				if (confirm("Are you sure you want to delete this photo? This cannot be recovered without Jake making a deep-dive into the backups."))
+					deleteFile();
+			});
 
 			document.addEventListener("keyup", function(e) {
 				if (e.which === LEFT_KEY)
@@ -78,6 +92,17 @@
 			function goToNextPhoto() {
 				if (_$nextBtn)
 					_$nextBtn.click();
+			}
+
+			function deleteFile() {
+				debugger;
+				fetch("@deleteUrl", {
+					method: "PUT",
+					headers: { 'Content-Type': 'application/json' },
+    				body: JSON.stringify({ fileIds: ["@Model.Filename"] })
+				}).then(function() {
+					window.close();
+				});
 			}
 		})();
 	</script>

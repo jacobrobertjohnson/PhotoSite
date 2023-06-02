@@ -132,6 +132,11 @@ body.has-sidebar .sidebar{
     border-left: 1px solid lightgray;
 }
 
+.footer button {
+    margin-right: .5rem;
+    font-size: 1rem;
+}
+
 .zoom-button {
     height: var(--zoom-button-size);
     width: var(--zoom-button-size);

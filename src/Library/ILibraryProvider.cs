@@ -8,4 +8,5 @@ public interface ILibraryProvider {
     List<QueryPhoto> GetPhotos(Family family, string date);
     QueryPhoto GetPhoto(Family family, string photoId);
     List<DateTime> GetPhotoDates(Family family);
+    void Delete(Family family, string fileId);
 }

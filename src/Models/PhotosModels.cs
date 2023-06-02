@@ -52,6 +52,12 @@ public class Photo {
 public class Photos_Viewer_AspModel : ModelBase {
     public Photos_Viewer_AspModel(object vueModel) : base(vueModel) { }
     public string PhotoUrl { get; set; }
-    public string PrevPhotoUrl { get; internal set; }
-    public string NextPhotoUrl { get; internal set; }
+    public string PrevPhotoUrl { get; set; }
+    public string NextPhotoUrl { get; set; }
+    public string Filename { get; set; }
+    public string FamilyId { get; internal set; }
+}
+
+public class DeletePhoto_Request {
+    public string[] fileIds { get; set; } = new string[0];
 }

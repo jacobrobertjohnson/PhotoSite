@@ -3,7 +3,7 @@ using PhotoSite.Models;
 namespace PhotoSite.Thumbnails;
 
 public class Thumbnail : PhotoReader {
-    readonly int[] _heightBreakpoints = new[] {
+    static readonly int[] _heightBreakpoints = new[] {
         100,
         200,
         300,
@@ -53,5 +53,10 @@ public class Thumbnail : PhotoReader {
             image.Mutate(x => x.Resize(width, newHeight, KnownResamplers.Lanczos3));
             image.Save(_photoPath);
         }
+    }
+
+    public static void Delete(Family family, QueryPhoto photo) {
+        foreach (int size in _heightBreakpoints)
+            new Thumbnail(family, photo, size).Delete();
     }
 }

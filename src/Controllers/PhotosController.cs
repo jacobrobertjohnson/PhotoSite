@@ -104,8 +104,7 @@ public class PhotosController : _BaseController
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = ONE_YEAR_IN_SECONDS)]
     public IActionResult Thumbnail(string familyId, int size, string filename) {
         Family family = _families[familyId];
-        string fileId = Path.GetFileNameWithoutExtension(filename);
-        QueryPhoto photo = _libraryProvider.GetPhoto(family, fileId);
+        QueryPhoto photo = getPhotoByFilename(family, filename);
 
         Thumbnail thumb = new Thumbnail(family, photo, size);
 
@@ -115,8 +114,7 @@ public class PhotosController : _BaseController
     [Route("/Photos/{familyId}/FullSize/{filename}")]
     public IActionResult FullSize(string familyId, string filename, bool download = false) {
         Family family = _families[familyId];
-        string fileId = Path.GetFileNameWithoutExtension(filename);
-        QueryPhoto photo = _libraryProvider.GetPhoto(family, fileId);
+        QueryPhoto photo = getPhotoByFilename(family, filename);
         PhotoReader contents;
 
         if (download) {
@@ -132,14 +130,13 @@ public class PhotosController : _BaseController
     [Route("/Photos/{familyId}/Viewer/{filename}")]
     public IActionResult Viewer(string familyId, string filename) {
         Family family = _families[familyId];
-        string fileId = Path.GetFileNameWithoutExtension(filename),
-            prevPhotoUrl = null,
+        string prevPhotoUrl = null,
             nextPhotoUrl = null;
-        QueryPhoto photo = _libraryProvider.GetPhoto(family, fileId);
+        QueryPhoto photo = getPhotoByFilename(family, filename);
         List<QueryPhoto> allPhotos = _libraryProvider.GetPhotos(family, $"{photo.DateTaken.Month}/%/{photo.DateTaken.Year}%");
 
         for (int i = 0; i < allPhotos.Count; i++) {
-            if (allPhotos[i].Id == fileId) {
+            if (allPhotos[i].Id == photo.Id) {
                 if (i > 0)
                     prevPhotoUrl = makeViewerUrl(family.Id, allPhotos[i - 1]);
                 if (i < allPhotos.Count - 1)
@@ -150,7 +147,9 @@ public class PhotosController : _BaseController
         return View(new Photos_Viewer_AspModel(new object()) {
             PhotoUrl = makePhotoUrl(family.Id, photo),
             PrevPhotoUrl = prevPhotoUrl,
-            NextPhotoUrl = nextPhotoUrl
+            NextPhotoUrl = nextPhotoUrl,
+            Filename = photo.Id + photo.Extension,
+            FamilyId = family.Id
         });
     }
 
@@ -159,4 +158,28 @@ public class PhotosController : _BaseController
 
     string makeViewerUrl(string familyId, QueryPhoto photo)
         => $"/Photos/{familyId}/Viewer/{photo.Id}{photo.Extension}";  
+
+    [HttpPut]
+    [Route("/Photos/{familyId}")]
+    public IActionResult DeletePhotos(string familyId, [FromBody] DeletePhoto_Request request) {
+        Family family = _families[familyId];
+
+        foreach (string filename in request.fileIds) {
+            deletePhoto(family, filename);
+        }
+
+        return Ok();
+    }
+
+    void deletePhoto(Family family, string filename) {
+        QueryPhoto photo = getPhotoByFilename(family, filename);
+
+        _libraryProvider.Delete(family, photo.Id);
+    }
+
+    QueryPhoto getPhotoByFilename(Family family, string filename) {
+        string fileId = Path.GetFileNameWithoutExtension(filename);
+
+        return _libraryProvider.GetPhoto(family, fileId);
+    }
 }
