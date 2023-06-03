@@ -26,7 +26,8 @@
         "inputFiles": [
             "wwwroot/js/Photos/sidebar.js",
             "wwwroot/js/Photos/imageSizer.js",
-            "wwwroot/js/Photos/thumbnails.js"
+            "wwwroot/js/Photos/thumbnails.js",
+            "wwwroot/js/Photos/multiSelect.js"
         ],
         "minify": {
             "enabled": true,

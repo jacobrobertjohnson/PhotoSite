@@ -35,8 +35,9 @@ public class Photo {
     public Photo() { }
 
     public Photo(string familyId, IUrlHelper url, QueryPhoto dbPhoto) {
-        ThumbnailUrl = $"/Photos/{familyId}/Thumbnails/[size]/{dbPhoto.Id}{dbPhoto.Extension}";
-        ViewerUrl = $"/Photos/{familyId}/Viewer/{dbPhoto.Id}{dbPhoto.Extension}";
+        Filename = dbPhoto.Id + dbPhoto.Extension;
+        ThumbnailUrl = $"/Photos/{familyId}/Thumbnails/[size]/{Filename}";
+        ViewerUrl = $"/Photos/{familyId}/Viewer/{Filename}";
         Id = dbPhoto.Id;
     }
 
@@ -47,6 +48,7 @@ public class Photo {
     public string ThumbnailUrl { get; set; }
     public string ViewerUrl { get; set; }
     public string Id { get; set; }
+    public string Filename { get; set; }
 }
 
 public class Photos_Viewer_AspModel : ModelBase {

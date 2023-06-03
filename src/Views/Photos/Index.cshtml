@@ -1,5 +1,9 @@
 @{
 	Layout = "_PhotoLayout";
+
+	string deleteUrl = Url.Action("DeletePhotos", new {
+		familyId = Model.FamilyId
+	});
 }
 
 @model PhotoSite.Models.Photos_Index_AspModel;
@@ -34,8 +38,8 @@
 			<text>
 				<div class="photo-thumbnail" id="@thumbnail.Id" data-background-url="@thumbnail.ThumbnailUrl">
 					<a href="@thumbnail.ViewerUrl" target="_blank">&nbsp;</a>
-					<input type="checkbox" id="Select_@thumbnail.Id" class="photo-thumbnail-select" />
 
+					<input type="checkbox" id="Select_@thumbnail.Id" data-id="@thumbnail.Filename" class="photo-thumbnail-select" />
 				</div>
 			</text>
 		}
@@ -43,6 +47,7 @@
 </section>
 
 @section Footer {
+	<button class="requires-selection" id="delete-photos">🗑️ Delete</button>
 	<button class="zoom-button" id="zoom-minus">-</button> Zoom <button class="zoom-button" id="zoom-plus">+</button>
 }
 
@@ -50,6 +55,39 @@
 	<script>
 		(function() {
 			thumbnails.render();
+
+			document.getElementById("delete-photos").addEventListener("click", function() {
+				if (confirm("Are you sure you want to delete these photos?"))
+					deletePhotos();
+			});
+
+			function deletePhotos() {
+				fetch("@deleteUrl", {
+					method: "PUT",
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						fileIds: multiSelect.getSelectedFiles()
+					})
+				}).then(function() {
+					clearSelectedFiles();
+				});
+			}
+
+			function clearSelectedFiles() {
+				let $checkboxes = multiSelect.getSelectedCheckboxes();
+
+				for (let i = 0; i < $checkboxes.length; i++) {
+					clearSelectedFile($checkboxes[i]);
+				}
+
+				multiSelect.update();
+			}
+
+			function clearSelectedFile($checkbox) {
+				let $photo = $checkbox.parentElement;
+
+				$photo.parentElement.removeChild($photo);
+			}
 		})();
 	</script>
 }

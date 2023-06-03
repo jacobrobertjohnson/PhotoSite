@@ -56,7 +56,7 @@
 			})
 
 			_$deleteBtn.addEventListener("click", function() {
-				if (confirm("Are you sure you want to delete this photo? This cannot be recovered without Jake making a deep-dive into the backups."))
+				if (confirm("Are you sure you want to delete this photo?"))
 					deleteFile();
 			});
 
@@ -95,7 +95,6 @@
 			}
 
 			function deleteFile() {
-				debugger;
 				fetch("@deleteUrl", {
 					method: "PUT",
 					headers: { 'Content-Type': 'application/json' },
