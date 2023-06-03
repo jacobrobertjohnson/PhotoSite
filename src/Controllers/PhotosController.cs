@@ -165,16 +165,23 @@ public class PhotosController : _BaseController
         Family family = _families[familyId];
 
         foreach (string filename in request.fileIds) {
-            deletePhoto(family, filename);
+            try {
+                deletePhoto(family, filename, request.deletePermanently);
+            } catch { }
         }
 
         return Ok();
     }
 
-    void deletePhoto(Family family, string filename) {
+    void deletePhoto(Family family, string filename, bool deletePermanently) {
         QueryPhoto photo = getPhotoByFilename(family, filename);
 
         _libraryProvider.Delete(family, photo.Id);
+
+        if (deletePermanently) {
+            new PhotoReader(family, photo).Delete();
+            PhotoSite.Thumbnails.Thumbnail.Delete(family, photo);
+        }
     }
 
     QueryPhoto getPhotoByFilename(Family family, string filename) {

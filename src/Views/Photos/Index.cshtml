@@ -48,6 +48,7 @@
 
 @section Footer {
 	<button class="requires-selection" id="delete-photos">🗑️ Delete</button>
+	<button class="requires-selection" id="delete-photos-permanent">🗑️ Delete Permanently</button>
 	<button class="zoom-button" id="zoom-minus">-</button> Zoom <button class="zoom-button" id="zoom-plus">+</button>
 }
 
@@ -58,15 +59,21 @@
 
 			document.getElementById("delete-photos").addEventListener("click", function() {
 				if (confirm("Are you sure you want to delete these photos?"))
-					deletePhotos();
+					deletePhotos(false);
 			});
 
-			function deletePhotos() {
+			document.getElementById("delete-photos-permanent").addEventListener("click", function() {
+				if (confirm("Are you sure you want to delete these photos? This cannot be undone."))
+					deletePhotos(true);
+			});
+
+			function deletePhotos(permanent) {
 				fetch("@deleteUrl", {
 					method: "PUT",
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({
-						fileIds: multiSelect.getSelectedFiles()
+						fileIds: multiSelect.getSelectedFiles(),
+						deletePermanently: permanent
 					})
 				}).then(function() {
 					clearSelectedFiles();

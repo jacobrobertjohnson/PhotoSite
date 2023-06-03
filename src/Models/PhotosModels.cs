@@ -62,4 +62,5 @@ public class Photos_Viewer_AspModel : ModelBase {
 
 public class DeletePhoto_Request {
     public string[] fileIds { get; set; } = new string[0];
+    public bool deletePermanently { get; set; } = false;
 }

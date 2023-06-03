@@ -27,14 +27,19 @@ public class PhotoReader {
     public void Delete() => delete(_photoPath);
 
     protected void delete(string photoPath) {
-        File.Delete(photoPath);
+        try {
+            File.Delete(photoPath);
+        } catch { }
+
         deleteFolderIfEmpty(_photoPath);
     }
 
     private void deleteFolderIfEmpty(string photoPath) {
         string dirName = Path.GetDirectoryName(photoPath);
         
-        if (Directory.GetFileSystemEntries(dirName).Count() == 0)
-            Directory.Delete(dirName);
+        try {
+            if (Directory.GetFiles(dirName).Count() == 0)
+                Directory.Delete(dirName);
+        } catch { }
     }
 }
