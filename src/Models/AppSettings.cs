@@ -1,6 +1,7 @@
 namespace PhotoSite.Models;
 
 public class AppSettings {
+    public string UserDbPath { get; set; }
     public List<Family> Families { get; set; } = new List<Family>();
 }
 

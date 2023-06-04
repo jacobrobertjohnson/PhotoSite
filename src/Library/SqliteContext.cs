@@ -8,11 +8,19 @@ public class SqliteContext : ISqliteContext {
 
     public void RunQuery(Family family, string query) => RunQuery(family, query, (reader) => { });
 
+    public void RunQuery(string dbPath, string query) => RunQuery(dbPath, query, (reader) => { });
+
     public void RunQuery(Family family, string query, Action<SqliteDataReader> onRun) 
         => RunQuery(family, query, command => {}, onRun);
+    
+    public void RunQuery(string dbPath, string query, Action<SqliteDataReader> onRun) 
+        => RunQuery(dbPath, query, command => {}, onRun);
 
-    public void RunQuery(Family family, string query, Action<SqliteCommand> commandFunc, Action<SqliteDataReader> onRun) {
-        using (SqliteConnection connection = new SqliteConnection($"Data Source={family.PhotoDbPath}")) {
+    public void RunQuery(Family family, string query, Action<SqliteCommand> commandFunc, Action<SqliteDataReader> onRun)
+        => RunQuery(family.PhotoDbPath, query, commandFunc, onRun);
+
+    public void RunQuery(string dbPath, string query, Action<SqliteCommand> commandFunc, Action<SqliteDataReader> onRun) {
+        using (SqliteConnection connection = new SqliteConnection($"Data Source={dbPath}")) {
             connection.Open();
 
             using (SqliteCommand command = connection.CreateCommand()) {

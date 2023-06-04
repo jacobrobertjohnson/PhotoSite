@@ -3,12 +3,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhotoSite.Models;
+using PhotoSite.Users;
 
 namespace PhotoSite.Controllers;
 
 [AllowAnonymous]
-public class LoginController : Controller
+public class LoginController : _BaseController
 {
+    IUserProvider _userProvider;
+    
+    public LoginController(IServiceProvider dependencies) : base(dependencies) {
+        _userProvider = dependencies.GetService<IUserProvider>();
+    }
+
     public IActionResult Index(bool failed = false)
     {
         var model = new Login_Index_Model();
@@ -26,13 +33,17 @@ public class LoginController : Controller
         IActionResult response = RedirectToAction("Index", new {
             Failed = true
         });
+        AuthenticatedUser user = _userProvider.Authenticate(form.Username, form.Password);
 
-        if (form.Username?.ToLower() == "jake") {
+        if (user != null) {
             var claims = new List<Claim>() {
-                new Claim("user", "jake"),
-                new Claim("role", "admin"),
-                new Claim("families", "Salo,JohnsonJake,JohnsonJeff,Everett"),
-                new Claim("photosFamilies", "Salo,JohnsonJake,JohnsonJeff,Everett")
+                new Claim("user", user.Username),
+                new Claim("role", "user"),
+                new Claim("userId", user.UserId.ToString()),
+                new Claim("families", string.Join(",", user.Families)),
+                new Claim("photosFamilies", string.Join(",", user.PhotoFamilies)),
+                new Claim("photosDeleteFamilies", string.Join(",", user.PhotoDeleteFamilies)),
+                new Claim("photosPermanentDeleteFamilies", string.Join(",", user.PhotoPermanentDeleteFamilies)),
             };
 
             var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies", "user", "role"));
