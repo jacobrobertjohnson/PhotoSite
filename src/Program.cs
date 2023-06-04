@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using PhotoSite.Authentication;
 using PhotoSite.Bundling;
+using PhotoSite.Crypto;
 using PhotoSite.Library;
 using PhotoSite.Models;
 using PhotoSite.Users;
@@ -39,6 +40,7 @@ builder.Services.AddSingleton<IAuthenticator, Authenticator>();
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 builder.Services.AddSingleton<ISqliteContext, SqliteContext>();
 builder.Services.AddSingleton<ILibraryProvider, SqliteLibraryProvider>();
+builder.Services.AddSingleton<ICryptoProvider, CryptoProvider>();
 builder.Services.AddSingleton<IUserProvider, SqliteUserProvider>();
 
 builder.Services.AddScoped<IUrlHelper>(factory =>
