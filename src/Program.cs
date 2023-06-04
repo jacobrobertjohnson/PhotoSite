@@ -72,7 +72,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.Use(async (context, next) => {
+app.Run(async (context) => {
     context.Response.Headers.Add("Referrer-Policy", "strict-origin");
  context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
     context.Response.Headers.Add("Content-Security-Policy", "script-src 'self'");
