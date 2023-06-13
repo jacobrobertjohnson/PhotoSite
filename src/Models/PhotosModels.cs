@@ -6,7 +6,11 @@ public class Photos_Index_AspModel : ModelBase {
     public Photos_Index_AspModel(object vueModel) : base(vueModel) { }
     public List<Photos_Index_SidebarItem> Sidebar { get; set; } = new List<Photos_Index_SidebarItem>();
     public List<Photo> Thumbnails { get; set; } = new List<Photo>();
+    public List<string> CameraModels { get; set; } = new List<string>();
     public string FamilyId { get; set; }
+    public string FamilyName { get; internal set; }
+    public string DateLabel { get; internal set; }
+    public string CameraModel { get; internal set; }
 }
 
 public class Photos_Index_VueModel {

@@ -4,49 +4,99 @@
 	string deleteUrl = Url.Action("DeletePhotos", new {
 		familyId = Model.FamilyId
 	});
+
+	string subTitle = Model.DateLabel;
+
+	if (!string.IsNullOrWhiteSpace(Model.CameraModel))
+		subTitle += ", " + Model.CameraModel;
 }
 
 @model PhotoSite.Models.Photos_Index_AspModel;
 
-@section Sidebar {
-	<ul class="sidebar-links" id="nav">
-		@foreach (var year in Model.Sidebar) {
-			<text>
-				<li>
-					<a href="@year.Url">@year.Label</a>
-
-					@if (year.Children != null && year.Children.Count > 0) {
-						<text>
-							<ul>
-								@foreach (var month in year.Children) {
-									<text>
-										<li><a href="@month.Url">@month.Label</a></li>
-									</text>
-								}
-							</ul>
-						</text>
-					}
-				</li>
-			</text>
-		}
-	</ul>
+@section Header {
+	<div class="header-label">
+		<div>@Model.FamilyName - Photos</div>
+		<small>@subTitle</small>
+	</div>
 }
 
-<section class="photo-date">
-	<div class="photo-thumbnails" id="thumbnails">
-		@foreach (var thumbnail in Model.Thumbnails) {
-			<text>
-				<div class="photo-thumbnail" id="@thumbnail.Id" data-background-url="@thumbnail.ThumbnailUrl">
-					<a href="@thumbnail.ViewerUrl" target="_blank">&nbsp;</a>
-
-					<input type="checkbox" id="Select_@thumbnail.Id" data-id="@thumbnail.Filename" class="photo-thumbnail-select" />
-				</div>
-			</text>
-		}
+@section Sidebar {
+	<div class="collapsible-sidebar">
+		<a href="/" class="collapsible-title">🏠 Home Page</a>
 	</div>
-</section>
+
+	<div class="collapsible-sidebar">
+		<label for="year-collapsible" class="collapsible-title">🗓️ Dates Taken</label>
+		<input type="checkbox" id="year-collapsible" />
+
+		<ul class="collapsible-sidebar-links" id="nav">
+			@foreach (var year in Model.Sidebar) {
+				<text>
+					<li>
+						<a href="@year.Url">@year.Label</a>
+
+						@if (year.Children != null && year.Children.Count > 0) {
+							<text>
+								<ul>
+									@foreach (var month in year.Children) {
+										<text>
+											<li><a class="month-link" href="@month.Url">@month.Label</a></li>
+										</text>
+									}
+								</ul>
+							</text>
+						}
+					</li>
+				</text>
+			}
+		</ul>
+	</div>	
+
+	<div class="collapsible-sidebar">
+		<label for="camera-model-collapsible" class="collapsible-title">📷 Camera Model</label>
+		<input type="checkbox" id="camera-model-collapsible" />
+
+		<ul class="collapsible-sidebar-links" id="camera-models">
+			<li>
+				<a href="?cameraModel=">All Camera Models</a>
+			</li>
+			
+			@foreach (var cameraModel in Model.CameraModels) {
+				<text>
+					<li>
+						<a href="?cameraModel=@cameraModel">@cameraModel</a>
+					</li>
+				</text>
+			}
+		</ul>
+	</div>	
+}
+
+@if (Model.Thumbnails.Count == 0) {
+	<text>
+		<div class="no-photos">No photos were found. Select a different date from the sidebar.</div>
+	</text> 
+} else {
+	<text>
+		<section class="photo-date">
+			<div class="photo-thumbnails" id="thumbnails">
+				@foreach (var thumbnail in Model.Thumbnails) {
+					<text>
+						<div class="photo-thumbnail" id="@thumbnail.Id" data-background-url="@thumbnail.ThumbnailUrl">
+							<a href="@thumbnail.ViewerUrl" target="_blank">&nbsp;</a>
+
+							<input type="checkbox" id="Select_@thumbnail.Id" data-id="@thumbnail.Filename" class="photo-thumbnail-select" />
+						</div>
+					</text>
+				}
+			</div>
+		</section>
+	</text>
+}
 
 @section Footer {
+	<button class="requires-selection" id="unselect-all">Clear All</button>
+	<button id="select-all">Select All</button>
 	<button class="requires-selection" id="delete-photos">🗑️ Delete</button>
 	<button class="requires-selection" id="delete-photos-permanent">🗑️ Delete Permanently</button>
 	<button class="zoom-button" id="zoom-minus">-</button> Zoom <button class="zoom-button" id="zoom-plus">+</button>
@@ -56,6 +106,14 @@
 	<script>
 		(function() {
 			thumbnails.render();
+
+			document.getElementById("select-all").addEventListener("click", function() {
+				multiSelect.selectAll();
+			});
+
+			document.getElementById("unselect-all").addEventListener("click", function() {
+				multiSelect.clearAll();
+			});
 
 			document.getElementById("delete-photos").addEventListener("click", function() {
 				if (confirm("Are you sure you want to delete these photos?"))

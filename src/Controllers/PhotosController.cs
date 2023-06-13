@@ -30,26 +30,52 @@ public class PhotosController : _BaseController
     }
 
     [Route("/Photos/{familyId}/{year?}/{month?}")]
-    public IActionResult Index(string familyId, int year = -1, int month = -1) {
-        IActionResult response = RedirectToAction("Index", "Home");
-        string date = "";
+    public IActionResult Index(
+        string familyId,
+        int year = -1,
+        int month = -1,
+        string cameraModel = null
+    ) {
+        IActionResult response = null;
+        string date = "",
+            dateLabel = "";
+        Family family = _families[familyId];
+        List<string> cameraModels = new List<string>();
+        List<Photos_Index_SidebarItem> sidebar = makeSidebar(family.Id);
+        string firstMonthUrl = sidebar
+            .FirstOrDefault(year => year.Children.Count > 0)?
+            .Children?
+            .FirstOrDefault()?
+            .Url;
 
-        if (_families.ContainsKey(familyId)) {
-            if (year > -1) {
-                date = $"%/{year}%";
+        if (year > -1) {
+            date = $"%/{year}%";
+            dateLabel = $"{year}";
 
-                if (month > -1)
-                    date = $"{month}/" + date;
+            if (month > -1) {
+                date = $"{month}/" + date;
+                dateLabel = _monthNames[month] + " " + dateLabel;
             }
 
-            response = View(new Photos_Index_AspModel(new Photos_Index_VueModel() {
-                FamilyId = familyId
-            }) {
-                Sidebar = makeSidebar(familyId),
-                Thumbnails = Thumbnails(familyId, date),
-                FamilyId = familyId
-            });
+            cameraModels = _libraryProvider.GetCameraModels(family, date);
+
+            if (!cameraModels.Contains(cameraModel))
+                cameraModel = null;
+        } else if (firstMonthUrl != null){
+            response = Redirect(firstMonthUrl);
         }
+
+        response ??= View(new Photos_Index_AspModel(new Photos_Index_VueModel() {
+            FamilyId = family.Id
+        }) {
+            Sidebar = sidebar,
+            Thumbnails = Thumbnails(family.Id, date, cameraModel),
+            CameraModels = cameraModels,
+            FamilyId = family.Id,
+            FamilyName = family.Name,
+            DateLabel = dateLabel,
+            CameraModel = cameraModel
+        });
 
         return response;
     }
@@ -93,9 +119,9 @@ public class PhotosController : _BaseController
         return sidebar;
     }
 
-    List<Photo> Thumbnails(string familyId, string date) {
+    List<Photo> Thumbnails(string familyId, string date, string cameraModel) {
         var family = _families[familyId];
-        var dbPhotos = _libraryProvider.GetPhotos(family, date);
+        var dbPhotos = _libraryProvider.GetPhotos(family, date, cameraModel);
 
         return Photo.MakeList(familyId, Url, dbPhotos);
     }
@@ -128,12 +154,18 @@ public class PhotosController : _BaseController
     }
 
     [Route("/Photos/{familyId}/Viewer/{filename}")]
-    public IActionResult Viewer(string familyId, string filename) {
+    public IActionResult Viewer(string familyId, string filename, string cameraModel = null) {
         Family family = _families[familyId];
         string prevPhotoUrl = null,
             nextPhotoUrl = null;
         QueryPhoto photo = getPhotoByFilename(family, filename);
-        List<QueryPhoto> allPhotos = _libraryProvider.GetPhotos(family, $"{photo.DateTaken.Month}/%/{photo.DateTaken.Year}%");
+        string photoDate = $"{photo.DateTaken.Month}/%/{photo.DateTaken.Year}%";
+        List<string> cameraModels = _libraryProvider.GetCameraModels(family, photoDate);
+
+        if (!cameraModels.Contains(cameraModel))
+            cameraModel = null;
+
+        List<QueryPhoto> allPhotos = _libraryProvider.GetPhotos(family, photoDate, cameraModel);
 
         for (int i = 0; i < allPhotos.Count; i++) {
             if (allPhotos[i].Id == photo.Id) {

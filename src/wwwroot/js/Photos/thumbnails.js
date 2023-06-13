@@ -1,10 +1,8 @@
-window.thumbnails = (function(containerSel, sizer, sidebar) {
-    let _$container = document.querySelector(containerSel);
-
+window.thumbnails = (function(sizer, sidebar) {
     window.addEventListener("resize", render);
 
     function render() {
-        let height = sizer.getHeight(),
+        let height = sizer && sizer.getHeight(),
             images = document.getElementsByClassName("photo-thumbnail"),
             $img,
             urlTemplate;
@@ -19,4 +17,4 @@ window.thumbnails = (function(containerSel, sizer, sidebar) {
     return {
         render: render
     }
-})("#thumbnails", window.imageSizer, window.sidebar);
+})(window.imageSizer, window.sidebar);

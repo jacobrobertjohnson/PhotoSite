@@ -14,10 +14,15 @@ public class SqliteLibraryProvider : ILibraryProvider {
     public bool PhotosExist() => true;
     public bool VideosExist() => true;
 
-    public List<QueryPhoto> GetPhotos(Family family, string date) {
+    public List<QueryPhoto> GetPhotos(Family family, string date, string cameraModel) {
         var photos = new List<QueryPhoto>();
+        string query = $"SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE Deleted = 0 AND DateTaken LIKE '{date}'";
 
-        _context.RunQuery(family, $"SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE Deleted = 0 AND DateTaken LIKE '{date}' ORDER BY DateTaken DESC",
+        if (!string.IsNullOrWhiteSpace(cameraModel))
+            query += " AND ExifModel = $cameraModel";
+
+        _context.RunQuery(family,  query + " ORDER BY DateTaken DESC",
+            command => command.Parameters.AddWithValue("$cameraModel", cameraModel).SqliteType = SqliteType.Text,
             reader => {
                 int fileId = reader.GetOrdinal("FileId"),
                     dateTaken = reader.GetOrdinal("DateTaken"),
@@ -31,6 +36,19 @@ public class SqliteLibraryProvider : ILibraryProvider {
                     OriginalFilename = filename,
                     Extension = Path.GetExtension(filename)
                 });
+            });
+
+        return photos;
+    }
+
+    public List<string> GetCameraModels(Family family, string date) {
+        var photos = new List<string>();
+
+        _context.RunQuery(family, $"SELECT DISTINCT ExifModel FROM Photos WHERE Deleted = 0 AND DateTaken LIKE '{date}' ORDER BY ExifModel ASC",
+            reader => {
+                int exifModel = reader.GetOrdinal("ExifModel");
+
+                photos.Add(reader.GetString(exifModel));
             });
 
         return photos;

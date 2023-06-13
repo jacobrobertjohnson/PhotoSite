@@ -6,7 +6,7 @@
 <header class="site-header">
 	<a class="sidebar-toggler" id="sidebar-toggler">☰</a>
 	
-	<a href="@Url.Action("Index", "Home")">Home</a>
+	@RenderSection("Header", false)
 </header>
 
 <nav id="sidebar" class="sidebar">

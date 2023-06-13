@@ -10,7 +10,8 @@ window.multiSelect = (function() {
     update();
 
     function update() {
-        _$selectedCheckboxes = document.querySelectorAll(".photo-thumbnail-select:checked");
+        _$allCheckboxes = document.querySelectorAll(".photo-thumbnail-select"),
+        _$selectedCheckboxes = document.querySelectorAll(".photo-thumbnail-select:checked"),
         _selectedFiles = [];
 
         for (let i = 0; i < _$selectedCheckboxes.length; i++) {
@@ -26,6 +27,14 @@ window.multiSelect = (function() {
         }
     }
 
+    function setSelected(checked) {
+        for (let i = 0; i < _$allCheckboxes.length; i++) {
+            _$allCheckboxes[i].checked = checked
+        }
+
+        update();
+    }
+
     return {
         getSelectedCheckboxes: function() {
             return _$selectedCheckboxes;
@@ -33,6 +42,14 @@ window.multiSelect = (function() {
 
         getSelectedFiles: function() {
             return _selectedFiles;
+        },
+
+        selectAll: function() {
+            setSelected(true);
+        },
+
+        clearAll: function() {
+            setSelected(false);
         },
 
         update: update

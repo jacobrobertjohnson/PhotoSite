@@ -15,7 +15,7 @@ window.imageSizer = (function(containerSel, sidebar) {
         _realSize,
         _size;
 
-    if (!_$plusBtn)
+    if (!_$container || !_$plusBtn)
         return;
 
     document.body.appendChild(_$styler);

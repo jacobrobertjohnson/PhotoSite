@@ -21,6 +21,7 @@
     flex-direction: row;
     align-items: stretch;
     position: fixed;
+    overflow: hidden;
     top: 0;
     left: 0;
     right: 0;
@@ -31,10 +32,23 @@
 .site-header a:visited {
     cursor: pointer;
     display: flex;
-    padding: 0 0.5rem;
+    padding: 0 0.5rem 0.5rem 0.5rem;
     align-items: center;
     color: white;
     text-decoration: none;
+}
+
+.header-label {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.header-label small {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: calc(100% - 3rem);
 }
 
 .sidebar-toggler {
@@ -42,7 +56,7 @@
 }
 
 .sidebar {
-    background: whitesmoke;
+    background: lightgray;
     border-right: 1px solid lightgray;
     box-shadow: 0 0 2rem black; 
     position: fixed;
@@ -53,12 +67,54 @@
     overflow-x: hidden;
     width: 0;
     transition: width var(--sidebar-width-transition-time) ease-in-out;
+    user-select: none;
+}
+
+.collapsible-sidebar {
+    background: whitesmoke;
+    box-shadow: 0 .1rem .25rem darkgrey;
+    margin: 0.5rem 1rem;
+    border-radius: 1rem;
+}
+
+.collapsible-title {
+    font-weight: 500;
+    padding: .5rem 1rem;
+    display: block;
+    cursor: pointer;
+    text-decoration: none;
+    color: black;
+}
+
+.collapsible-title + input[type="checkbox"] {
+    display: none;
+}
+
+.collapsible-title + input[type="checkbox"] + .collapsible-sidebar-links {
+    display: none;
+}
+
+.collapsible-title + input[type="checkbox"]:checked + .collapsible-sidebar-links {
+    display: block;
+}
+
+.collapsible-sidebar li {
+    list-style-type: none;
 }
 
 body.has-sidebar .sidebar{
     width: var(--sidebar-width);
     transition: width var(--sidebar-width-transition-time) ease-in-out;
     z-index: 1;
+}
+
+.no-photos {
+    text-align: center;
+    font-size: 1.25rem;
+    height: calc(100% - var(--header-height) - var(--footer-height));
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .photo-thumbnails {
