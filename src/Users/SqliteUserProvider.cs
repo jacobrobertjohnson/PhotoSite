@@ -72,6 +72,7 @@ public class SqliteUserProvider : IUserProvider {
                 if (_cryptoProvider.CompareHashes(hashedPassword, storedHashedPassword)) {
                     user = user ?? new AuthenticatedUser();
                     user.Username = reader.GetString(username);
+                    user.UserId = reader.GetInt32(userId);
                     user.Families.Add(family);
 
                     if (reader.GetBoolean(photos)) {
@@ -88,5 +89,20 @@ public class SqliteUserProvider : IUserProvider {
         );
 
         return user;
+    }
+
+    public void SetPassword(int userId, string hashedNewPassword) {
+        _context.RunQuery(_userDbPath,
+            "UPDATE User " +
+                "SET Password = $password " +
+            "WHERE UserId = $userId",
+
+            command => {
+                command.Parameters.AddWithValue("$userId", userId).SqliteType = SqliteType.Integer;
+                command.Parameters.AddWithValue("$password", hashedNewPassword).SqliteType = SqliteType.Text;
+            },
+
+            reader => { }
+        );
     }
 }

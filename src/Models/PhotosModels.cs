@@ -11,6 +11,8 @@ public class Photos_Index_AspModel : ModelBase {
     public string FamilyName { get; internal set; }
     public string DateLabel { get; internal set; }
     public string CameraModel { get; internal set; }
+    public int Year { get; set; }
+    public int Month { get; set; }
 }
 
 public class Photos_Index_VueModel {

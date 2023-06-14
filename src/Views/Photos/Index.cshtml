@@ -21,55 +21,88 @@
 }
 
 @section Sidebar {
-	<div class="collapsible-sidebar">
-		<a href="/" class="collapsible-title">🏠 Home Page</a>
+	<div class="sidebar-section collapsible-sidebar-section">
+		<a href="/" class="sidebar-section-title">🏠 Home Page</a>
 	</div>
 
-	<div class="collapsible-sidebar">
-		<label for="year-collapsible" class="collapsible-title">🗓️ Date Taken</label>
+	<div class="sidebar-section collapsible-sidebar-section">
+		<label for="year-collapsible" class="sidebar-section-title">🗓️ Date Taken</label>
 		<input type="checkbox" id="year-collapsible" />
 
-		<ul class="collapsible-sidebar-links" id="nav">
+		<div class="collapsible-sidebar-links padding-bottom-halfrem" id="nav">
 			@foreach (var year in Model.Sidebar) {
+				string yearClass = "sidebar-section inner-sidebar-section";
+
+				if (year.Label == $"{Model.Year}")
+					yearClass += " selected-sidebar-section";
+
 				<text>
-					<li>
-						<a href="@year.Url">@year.Label</a>
+					<div class="@yearClass">
+						<a class="sidebar-section-title" href="@year.Url">@year.Label</a>
 
 						@if (year.Children != null && year.Children.Count > 0) {
 							<text>
 								<ul>
 									@foreach (var month in year.Children) {
+										string monthClass = "";
+
+										if (month.Url.Contains($"{Model.Year}/{Model.Month}"))
+											monthClass = "selected-sidebar-item";
+
 										<text>
-											<li><a class="month-link" href="@month.Url">@month.Label</a></li>
+											<li class="@monthClass"><a class="month-link" href="@month.Url">@month.Label</a></li>
 										</text>
 									}
 								</ul>
 							</text>
 						}
-					</li>
+					</div>
 				</text>
 			}
-		</ul>
+		</div>
 	</div>	
 
-	<div class="collapsible-sidebar">
-		<label for="camera-model-collapsible" class="collapsible-title">📷 Camera Model</label>
+	@{
+		string cameraModelSectionClass = "sidebar-section collapsible-sidebar-section";
+
+			if (!string.IsNullOrWhiteSpace(Model.CameraModel))
+				cameraModelSectionClass += " selected-sidebar-section";
+	}
+
+	<div class="@cameraModelSectionClass">
+		<label for="camera-model-collapsible" class="sidebar-section-title">📷 Camera Model</label>
 		<input type="checkbox" id="camera-model-collapsible" />
 
 		<ul class="collapsible-sidebar-links" id="camera-models">
-			<li>
+			@{
+				string allCameraModelsClass = "";
+
+				if (string.IsNullOrWhiteSpace(Model.CameraModel))
+					allCameraModelsClass = "selected-sidebar-item";
+			}
+
+			<li class="@allCameraModelsClass">
 				<a href="?cameraModel=">All Camera Models</a>
 			</li>
-			
+
 			@foreach (var cameraModel in Model.CameraModels) {
+				string cameraModelClass = "";
+
+				if (cameraModel == Model.CameraModel)
+					cameraModelClass = "selected-sidebar-item";
+
 				<text>
-					<li>
+					<li class="@cameraModelClass">
 						<a href="?cameraModel=@cameraModel">@cameraModel</a>
 					</li>
 				</text>
 			}
 		</ul>
 	</div>	
+
+	<div class="sidebar-section collapsible-sidebar-section">
+		<a href="/" class="sidebar-section-title">🗑️ Deleted Items</a>
+	</div>
 }
 
 @if (Model.Thumbnails.Count == 0) {
@@ -95,11 +128,18 @@
 }
 
 @section Footer {
-	<button class="requires-selection" id="unselect-all">Clear All</button>
-	<button id="select-all">Select All</button>
-	<button class="requires-selection" id="delete-photos">🗑️ Delete</button>
-	<button class="requires-selection" id="delete-photos-permanent">🗑️ Delete Permanently</button>
-	<button class="zoom-button" id="zoom-minus">-</button> Zoom <button class="zoom-button" id="zoom-plus">+</button>
+	<div class="footer-left">
+		<button class="select-all hide-if-disabled" id="unselect-all">☐ Clear All</button>
+		<button class="select-all hide-if-disabled" id="select-all">☑️ Select All</button>
+		<button class="requires-selection" id="download-photos">💾 <span class="hide-on-mobile">&nbsp;Download</span></button>
+		<button class="requires-selection" id="delete-photos">🗑️ <span class="hide-on-mobile">&nbsp;Delete</span></button>
+	</div>
+
+	<div class="footer-right">
+		<button class="zoom-button" id="zoom-minus">-</button>
+		<div class="hide-on-mobile zoom-label">Zoom</div>
+		<button class="zoom-button" id="zoom-plus">+</button>
+	</div>
 }
 
 @section Scripts {
@@ -116,13 +156,11 @@
 			});
 
 			document.getElementById("delete-photos").addEventListener("click", function() {
-				if (confirm("Are you sure you want to delete these photos?"))
-					deletePhotos(false);
-			});
+				let photoCount = multiSelect.getSelectedFiles().length,
+					s = photoCount > 1 ? "s" : "";
 
-			document.getElementById("delete-photos-permanent").addEventListener("click", function() {
-				if (confirm("Are you sure you want to delete these photos? This cannot be undone."))
-					deletePhotos(true);
+				if (confirm(photoCount + " photo" + s + " will be deleted. Are you sure you want to continue?"))
+					deletePhotos(false);
 			});
 
 			function deletePhotos(permanent) {
@@ -133,9 +171,9 @@
 						fileIds: multiSelect.getSelectedFiles(),
 						deletePermanently: permanent
 					})
-				}).then(function() {
-					clearSelectedFiles();
 				});
+
+				clearSelectedFiles();
 			}
 
 			function clearSelectedFiles() {

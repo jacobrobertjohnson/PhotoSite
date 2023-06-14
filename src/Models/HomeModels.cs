@@ -46,6 +46,7 @@ public class Home_Index_Family
         if (_photosFamilies.Contains(fam.Id))
             Apps.Add(new Home_Index_App() {
                 Name = "Photos",
+                Icon = "🖼️",
                 Url = urlHelper.Action("Index", "Photos", new { familyId = fam.Id })
             });
     }
@@ -64,7 +65,14 @@ public class Home_Index_Family
             Apps = new List<Home_Index_App>() {
                 new Home_Index_App() {
                     Name = "Log Out",
+                    Icon = "🚪",
                     Url = urlHelper.Action("Logout", "Login")
+                },
+
+                new Home_Index_App() {
+                    Name = "Change Password",
+                    Icon = "🔑",
+                    Url = urlHelper.Action("Password", "UserPrefs")
                 }
             }
         };
@@ -74,4 +82,5 @@ public class Home_Index_Family
 public class Home_Index_App {
     public string Name { get; set; }
     public string Url { get; set; }
+    public string Icon { get; set; }
 }

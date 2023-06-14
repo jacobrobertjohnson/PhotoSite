@@ -12,11 +12,16 @@
             <div class="family">
                 <div class="family__header">@family.Name</div>
 
-                @foreach (Home_Index_App app in family.Apps) {
-                    <text>
-                        <a href="@app.Url">@app.Name</a>
-                    </text>
-                }
+                <div class="family__icons">
+                    @foreach (Home_Index_App app in family.Apps) {
+                        <text>
+                            <a class="app-launcher" href="@app.Url">
+                                <div class="app-launcher-icon">@app.Icon</div>
+                                <div class="app-launcher-name">@app.Name</div>
+                            </a>
+                        </text>
+                    }
+                </div>
             </div>
         </text>
     }

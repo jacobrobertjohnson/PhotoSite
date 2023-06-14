@@ -5,27 +5,31 @@
 @model PhotoSite.Models.Login_Index_Model;
 
 <form class="login-form" asp-action="Authenticate">
-    <h1 class="center">Login</h1>
+    <div class="family">
+        <div class="family__header">Login</div>
 
-    @if (Model.Message != null) {
-        <text>
-            <p class="validation-message validation-message--@Model.MessageType">
-                @Model.Message;
-            </p>
-        </text>
-    }
+        <div class="family__form">
+            @if (Model.Message != null) {
+                <text>
+                    <p class="validation-message validation-message--@Model.MessageType">
+                        @Model.Message;
+                    </p>
+                </text>
+            }
 
-    <div class="input-group">
-        <label for="username">Username</label>
-        <input type="text" name="Username" id="username" />
-    </div>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" name="Username" id="username" />
+            </div>
 
-    <div class="input-group">
-        <label for="password">Password</label>
-        <input type="password" name="Password" id="password" />
-    </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" name="Password" id="password" />
+            </div>
 
-    <div class="button-row button-row--right">
-        <button type="submit" class="right">Login</button>
+            <div class="button-row button-row--right">
+                <button type="submit" class="right">Login</button>
+            </div>
+        </div>
     </div>
 </form>

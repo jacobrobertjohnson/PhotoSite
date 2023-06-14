@@ -74,7 +74,9 @@ public class PhotosController : _BaseController
             FamilyId = family.Id,
             FamilyName = family.Name,
             DateLabel = dateLabel,
-            CameraModel = cameraModel
+            CameraModel = cameraModel,
+            Year = year,
+            Month = month
         });
 
         return response;

@@ -1,10 +1,11 @@
 :root {
     --header-height: 2.5rem;
-    --footer-height: 2rem;
+    --footer-height: 2.5rem;
     --sidebar-width: 17rem;
     --sidebar-width-transition-time: 0.1s;
     --photo-gutter: 2px;
-    --zoom-button-size: 2rem;
+    --sidebar-section-border-radius: .75rem;
+    --sidebar-section-padding: .4rem 1rem;
 }
 
 #mobile-detector {
@@ -70,36 +71,92 @@
     user-select: none;
 }
 
-.collapsible-sidebar {
-    background: whitesmoke;
+.sidebar-section {
     box-shadow: 0 .1rem .25rem darkgrey;
     margin: 0.5rem 1rem;
-    border-radius: 1rem;
+    border-radius: var(--sidebar-section-border-radius);
 }
 
-.collapsible-title {
+.collapsible-sidebar-section {
+    background: whitesmoke;
+}
+
+.inner-sidebar-section {
+    background: lightgray;
+}
+
+.sidebar-section-title {
     font-weight: 500;
-    padding: .5rem 1rem;
+    padding: var(--sidebar-section-padding);
     display: block;
     cursor: pointer;
     text-decoration: none;
     color: black;
+    border-top-left-radius: var(--sidebar-section-border-radius);
+    border-top-right-radius: var(--sidebar-section-border-radius);
 }
 
-.collapsible-title + input[type="checkbox"] {
+.sidebar-section-title + input[type="checkbox"] {
     display: none;
 }
 
-.collapsible-title + input[type="checkbox"] + .collapsible-sidebar-links {
+.sidebar-section-title + input[type="checkbox"] + .collapsible-sidebar-links {
     display: none;
 }
 
-.collapsible-title + input[type="checkbox"]:checked + .collapsible-sidebar-links {
+.sidebar-section-title + input[type="checkbox"]:checked + .collapsible-sidebar-links {
     display: block;
 }
 
-.collapsible-sidebar li {
+.sidebar-section ul {
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-section li {
     list-style-type: none;
+}
+
+.sidebar-section li a {
+    text-decoration: none;
+    color: black;
+    display: block;
+    padding: var(--sidebar-section-padding);
+}
+
+.selected-sidebar-section {
+    background: slategray;
+    box-shadow: 0 .1rem .5rem gray;
+}
+.selected-sidebar-section .sidebar-section-title {
+    color: white;
+    font-weight: 900;
+}
+
+.sidebar-section li {
+    background: white;
+}
+
+.sidebar-section li:hover {
+    background: darkslategray;
+}
+.sidebar-section li:hover a {
+    color: white;
+}
+
+.sidebar-section .selected-sidebar-item a {
+    font-weight: bold;
+    border-radius: var(--sidebar-section-border-radius);
+}
+
+.sidebar-section li:first-of-type {
+    border-top-left-radius: var(--sidebar-section-border-radius);
+    border-top-right-radius: var(--sidebar-section-border-radius);
+}
+
+.sidebar-section li:last-of-type {
+    border-bottom-left-radius: var(--sidebar-section-border-radius);
+    border-bottom-right-radius: var(--sidebar-section-border-radius);
 }
 
 body.has-sidebar .sidebar{
@@ -180,8 +237,8 @@ body.has-sidebar .sidebar{
 
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: flex-end;
+    align-items: stretch;
+    justify-content: space-between;
     
     background: whitesmoke;
     border-top: 1px solid lightgray;
@@ -189,16 +246,42 @@ body.has-sidebar .sidebar{
 }
 
 .footer button {
-    margin-right: .5rem;
+    margin: 0;
     font-size: 1rem;
+    min-width: var(--footer-height);
+    border-radius: 0;
+    border: 1px solid lightgray;
+    border-top: 0;
+    border-bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer a {
+    text-decoration: none;
+    display: flex;
+    align-items: stretch;
+}
+
+.footer-left,
+.footer-right {
+    display: flex;
+    align-items: stretch;
+}
+
+.select-all {
+    width: 7rem;
+}
+
+.zoom-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .zoom-button {
-    height: var(--zoom-button-size);
-    width: var(--zoom-button-size);
     font-weight: bold;
-    font-size: 1rem;
-    margin: 0 0.5rem;
 }
 
 .photo-viewer {
@@ -255,7 +338,23 @@ body.has-sidebar .sidebar{
     right: 0;
 }
 
+.hide-if-disabled:disabled {
+    display: none;
+}
+
+.hide-on-mobile {
+    display: none;
+}
+
+.padding-bottom-halfrem {
+    padding-bottom: .5rem;
+}
+
 @media screen and (min-width: 480px) {
+    :root {
+        --footer-height: 2rem;
+    }
+
     #mobile-detector {
         display: none;
     }
@@ -293,5 +392,13 @@ body.has-sidebar .sidebar{
 
     .photo-thumbnail:hover .photo-thumbnail-select {
         display: unset;
-    }    
+    }
+    
+    .footer button {
+        margin: 0 0.25rem;
+    }
+
+    .hide-on-mobile {
+        display: inherit;
+    }
 }

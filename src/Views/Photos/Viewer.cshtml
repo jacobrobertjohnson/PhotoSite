@@ -31,10 +31,13 @@
 </style>
 
 @section Footer {
-	<a href="@(@Model.PhotoUrl)?download=true">
-		<button type="button">💾 Save</button>
-	</a>
-	<button type="button" id="delete-photo">🗑️ Delete</button>
+	<div class="footer-left">
+		<a href="@(@Model.PhotoUrl)?download=true">
+			<button type="button">💾 Download</button>
+		</a>
+		
+		<button type="button" id="delete-photo">🗑️ Delete</button>
+	</div>
 }
 
 @section Scripts {

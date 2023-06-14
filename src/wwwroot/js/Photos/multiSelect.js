@@ -1,5 +1,7 @@
 window.multiSelect = (function() {
     let _$dependentBtns = document.getElementsByClassName("requires-selection"),
+        _$selectAllBtn = document.getElementById("select-all"),
+        _$unselectAllBtn = document.getElementById("unselect-all"),
         _$selectedCheckboxes = [],
         _selectedFiles = [];
 
@@ -24,6 +26,14 @@ window.multiSelect = (function() {
     function render() {
         for (let i = 0; i < _$dependentBtns.length; i++) {
             _$dependentBtns[i].disabled = !_selectedFiles.length;
+        }
+
+        if (_$allCheckboxes.length === _$selectedCheckboxes.length) {
+            _$selectAllBtn.disabled = true;
+            _$unselectAllBtn.disabled = false;
+        } else {
+            _$selectAllBtn.disabled = false;
+            _$unselectAllBtn.disabled = true;
         }
     }
 
