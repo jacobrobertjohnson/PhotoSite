@@ -21,7 +21,7 @@ public class SqliteLibraryProvider : ILibraryProvider {
         if (!string.IsNullOrWhiteSpace(cameraModel))
             query += " AND ExifModel = $cameraModel";
 
-        _context.RunQuery(family,  query + " ORDER BY DateTaken DESC",
+        _context.RunQuery(family,  query,
             command => command.Parameters.AddWithValue("$cameraModel", cameraModel).SqliteType = SqliteType.Text,
             reader => {
                 int fileId = reader.GetOrdinal("FileId"),

@@ -45,16 +45,21 @@ public class Photo {
         ThumbnailUrl = $"/Photos/{familyId}/Thumbnails/[size]/{Filename}";
         ViewerUrl = $"/Photos/{familyId}/Viewer/{Filename}";
         Id = dbPhoto.Id;
+        DateTaken = dbPhoto.DateTaken;
     }
 
     public static List<Photo> MakeList(string familyId, IUrlHelper url, List<QueryPhoto> dbPhotos) {
-        return dbPhotos.Select(p => new Photo(familyId, url, p)).ToList();
+        return dbPhotos
+            .Select(p => new Photo(familyId, url, p))
+            .OrderByDescending(p => p.DateTaken)
+            .ToList();
     }
     
     public string ThumbnailUrl { get; set; }
     public string ViewerUrl { get; set; }
     public string Id { get; set; }
     public string Filename { get; set; }
+    public DateTime DateTaken { get; set; }
 }
 
 public class Photos_Viewer_AspModel : ModelBase {
