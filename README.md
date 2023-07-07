@@ -12,6 +12,7 @@ Similarly to the **PhotoImporter** goals, **PhotoSite** aims to:
 - Manage all of the above via permissions stored in a SQLite database file
 
 > **Note**
+> 
 > This is a very early prototype of the project. Code quality and styling are very rough, and will improve over time.
 
 # Setup
