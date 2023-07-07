@@ -11,16 +11,18 @@ Similarly to the **PhotoImporter** goals, **PhotoSite** aims to:
     - Original-size image downloads
 - Manage all of the above via permissions stored in a SQLite database file
 
-> **Note**
-> This is a very early prototype of the project. Code quality and styling are very rough, and will improve over time.
+|:warning: Note|
+|:--|
+|This is a very early prototype of the project. Code quality and styling are very rough, and will improve over time.|
 
 # Setup
 ## Requirements
 - .NET 6 & ASP.NET 6 SDK & Runtime
 - The SQLite database & image files from an existing **PhotoSite** import
 
-> **Note**
-> This site has only been tested on [Ubuntu Server 22.0.4.2 LTS](https://ubuntu.com/download/server), using the [Kestrel](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel?view=aspnetcore-7.0) server built into ASP.NET 6. Exposure to the Internet is via [Cloudflare Tunnels](https://www.cloudflare.com/products/tunnel/).
+|:warning: Note|
+|:--|
+|This site has only been tested on Ubuntu Server 22.0.4.2 LTS, using the Kestrel server built into ASP.NET. Exposure to the Internet is via [Cloudflare Tunnels](https://www.cloudflare.com/products/tunnel/).|
 
 ## Sample appsettings.json file
 As a .NET 6 application, **PhotoSite** stores its configuration in the `appsettings.json` file. The following format is expected:
