@@ -11,7 +11,7 @@ Similarly to the **PhotoImporter** goals, **PhotoSite** aims to:
     - Original-size image downloads
 - Manage all of the above via permissions stored in a SQLite database file
 
-|:warning:|This is a very early prototype of the project. Code quality and styling are very rough, and will improve over time.|
+|:warning: Note|This is a very early prototype of the project. Code quality and styling are very rough, and will improve over time.|
 |---|---|
 
 # Setup
