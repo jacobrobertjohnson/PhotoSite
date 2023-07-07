@@ -65,6 +65,54 @@ As a .NET 6 application, **PhotoSite** stores its configuration in the `appsetti
 *More information on recommended filesystem structures can be found in the [PhotoImporter README](https://github.com/jacobrobertjohnson/PhotoImporter#sample-setup-scenario).
 
 ## User DB Structure
+### Diagram
+```Mermaid
+---
+title:Users DB Diagram
+---
+erDiagram
+    Users ||--|{ User_Family : links
+    Users {
+        INTEGER UserId
+        TEXT Username
+        TEXT Password
+        INTEGER Enabled
+    }
+    User_Family {
+        INTEGER UserId
+        TEXT FamilyName
+        INTEGER Photos
+        INTEGER DeletePhotos
+        INTEGER DeletePhotosPermanently
+    }
+```
+
+### Table Descriptions
+
+|:warning: Note|
+|:--|
+|Since SQLite does not support a `BIT` or similar boolean datatype, `INTEGER` columns containing `1` or `0` are used instead.|
+
+#### Users
+Contains basic login information for each User that is permitted to access the site.
+
+|Column Name|Datatype|Description|
+|---|---|---|
+|`UserId`|`INTEGER PRIMARY KEY`|Primary key identifying the user.|
+|`Username`|`TEXT`|Plaintext username used for logging in.|
+|`Password`|`TEXT`|Salted & hashed password used for logging in.|
+|`Enabled`|`INTEGER`|Whether the user is allowed to log in. Used for temporarily preventing access without entirely removing the user.|
+
+#### User_Family
+Links a User to one or more Families. Sets various per-Family permissions for the User.
+
+|Column Name|Datatype|Description|
+|---|---|---|
+|`UserId`|`INTEGER FOREIGN KEY REFERENCES User(UserId)`|Primary key identifying the user.|
+|`FamilyName`|`TEXT`|Unique string identifier for the linked Family. Must match the value in `AppSettings.Families[].Id`|
+|`Photos`|`INTEGER`|Indicates whether the user is permitted to see Photos for this Family.|
+|`DeletePhotos`|`INTEGER`|Indicates whether the user is permitted to send Photos to the **Delete Items** section in this Family.|
+|`DeletePhotosPermanently`|`INTEGER`|Indicates whether the user is permitted to access the **Delete Items** section in this Family, and permanently delete photos from it.|
 
 ## User Creation Process
 As stated above, this is an early version of the codebase. Eventually, I will get around to creating an initial setup script and a basic User management application. Until then, I have been using the following workaround to create users:
