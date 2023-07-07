@@ -66,7 +66,7 @@ As a .NET 6 application, **PhotoSite** stores its configuration in the `appsetti
 
 ## User DB Structure
 ### Diagram
-```Mermaid
+```mermaid 
 ---
 title:Users DB Diagram
 ---
