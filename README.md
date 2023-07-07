@@ -20,10 +20,9 @@ Similarly to the **PhotoImporter** goals, **PhotoSite** aims to:
 - .NET 6 & ASP.NET 6 SDK & Runtime
 - The SQLite database & image files from an existing **PhotoSite** import
 
-> **Note**
-> This site has only been tested on Ubuntu Server 22.0.4.2 LTS, using the Kestrel server built into ASP.NET. Exposure to the Internet is via [Cloudflare Tunnels](https://www.cloudflare.com/products/tunnel/).
-
-
+|:warning: Note|
+|:--|
+|This site has only been tested on Ubuntu Server 22.0.4.2 LTS, using the Kestrel server built into ASP.NET. Exposure to the Internet is via [Cloudflare Tunnels](https://www.cloudflare.com/products/tunnel/).|
 
 # Screenshots
 ## Login Screen
