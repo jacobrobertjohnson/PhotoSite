@@ -46,7 +46,7 @@
 									@foreach (var month in year.Children) {
 										string monthClass = "";
 
-										if (month.Url.Contains($"{Model.Year}/{Model.Month}"))
+										if (month.Url.EndsWith($"{Model.Year}/{Model.Month}"))
 											monthClass = "selected-sidebar-item";
 
 										<text>
