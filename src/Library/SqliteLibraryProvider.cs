@@ -48,7 +48,8 @@ public class SqliteLibraryProvider : ILibraryProvider {
             reader => {
                 int exifModel = reader.GetOrdinal("ExifModel");
 
-                photos.Add(reader.GetString(exifModel));
+                if (!reader.IsDBNull(exifModel))
+                    photos.Add(reader.GetString(exifModel));
             });
 
         return photos;
