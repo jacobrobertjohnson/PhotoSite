@@ -19,18 +19,18 @@ public class SqliteUserProvider : IUserProvider {
         _context = dependencies.GetService<ISqliteContext>();
         _cryptoProvider = dependencies.GetService<ICryptoProvider>();
 
-        _context.RunQuery(_userDbPath, "PRAGMA foreign_keys = ON");
+        Task.WaitAll(_context.RunQuery(_userDbPath, "PRAGMA foreign_keys = ON"));
 
-        _context.RunQuery(_userDbPath,
+        Task.WaitAll(_context.RunQuery(_userDbPath,
             "CREATE TABLE IF NOT EXISTS User(" +
                 "UserId INTEGER PRIMARY KEY," +
                 "Username TEXT," +
                 "Password TEXT," +
                 "Enabled INTEGER" +
             ")"
-        );
+        ));
 
-        _context.RunQuery(_userDbPath,
+        Task.WaitAll(_context.RunQuery(_userDbPath,
             "CREATE TABLE IF NOT EXISTS User_Family(" +
                 "UserId INTEGER," +
                 "FamilyName TEXT," +
@@ -40,14 +40,14 @@ public class SqliteUserProvider : IUserProvider {
 
                 "FOREIGN KEY(UserId) REFERENCES User(UserId) ON DELETE CASCADE" +
             ")"
-        );
+        ));
     }
 
-    public AuthenticatedUser Authenticate(string username, string plainPassword) {
+    public async Task<AuthenticatedUser> Authenticate(string username, string plainPassword) {
         AuthenticatedUser user = null;
         string hashedPassword =  _cryptoProvider.HashValue(plainPassword, username, _machineKey);
 
-        _context.RunQuery(_userDbPath,
+        await _context.RunQuery(_userDbPath,
             "SELECT U.UserId, Password, Username, FamilyName, Photos, DeletePhotos, DeletePhotosPermanently " +
             "FROM User U " +
                 "JOIN User_Family UF " +
@@ -91,8 +91,8 @@ public class SqliteUserProvider : IUserProvider {
         return user;
     }
 
-    public void SetPassword(int userId, string hashedNewPassword) {
-        _context.RunQuery(_userDbPath,
+    public async Task SetPassword(int userId, string hashedNewPassword) {
+        await _context.RunQuery(_userDbPath,
             "UPDATE User " +
                 "SET Password = $password " +
             "WHERE UserId = $userId",

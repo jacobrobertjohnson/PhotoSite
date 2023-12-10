@@ -32,7 +32,7 @@ public class UserPrefsController : _BaseController {
         return View(new UserPrefs_Password_Model(result));
     }
 
-    public IActionResult ChangePassword([FromForm] UserPrefs_ChangePassword_Request form) {
+    public async Task<IActionResult> ChangePassword([FromForm] UserPrefs_ChangePassword_Request form) {
         string result = "success";
 
         if (string.IsNullOrWhiteSpace(form.CurrentPassword))
@@ -47,12 +47,12 @@ public class UserPrefsController : _BaseController {
         if (result == "success") {
             string username = _authenticator.GetClaimValue("user");
 
-            if (_userProvider.Authenticate(username, form.CurrentPassword) == null)
+            if ((await _userProvider.Authenticate(username, form.CurrentPassword)) == null)
                 result = "currentPasswordWrong";
             else {
                 string hashedNewPassword = _cryptoProvider.HashValue(form.NewPassword, username, _machineKey);
 
-                _userProvider.SetPassword(_userId, hashedNewPassword);
+                await _userProvider.SetPassword(_userId, hashedNewPassword);
             }
         }
 

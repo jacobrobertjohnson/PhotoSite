@@ -6,20 +6,20 @@ namespace PhotoSite.Library;
 public class SqliteContext : ISqliteContext {
     public SqliteContext() { }
 
-    public void RunQuery(Family family, string query) => RunQuery(family, query, (reader) => { });
+    public async Task RunQuery(Family family, string query) => await RunQuery(family, query, (reader) => { });
 
-    public void RunQuery(string dbPath, string query) => RunQuery(dbPath, query, (reader) => { });
+    public async Task RunQuery(string dbPath, string query) => await RunQuery(dbPath, query, (reader) => { });
 
-    public void RunQuery(Family family, string query, Action<SqliteDataReader> onRun) 
-        => RunQuery(family, query, command => {}, onRun);
+    public async Task RunQuery(Family family, string query, Action<SqliteDataReader> onRun) 
+        => await RunQuery(family, query, command => {}, onRun);
     
-    public void RunQuery(string dbPath, string query, Action<SqliteDataReader> onRun) 
-        => RunQuery(dbPath, query, command => {}, onRun);
+    public async Task RunQuery(string dbPath, string query, Action<SqliteDataReader> onRun) 
+        => await RunQuery(dbPath, query, command => {}, onRun);
 
-    public void RunQuery(Family family, string query, Action<SqliteCommand> commandFunc, Action<SqliteDataReader> onRun)
-        => RunQuery(family.PhotoDbPath, query, commandFunc, onRun);
+    public async Task RunQuery(Family family, string query, Action<SqliteCommand> commandFunc, Action<SqliteDataReader> onRun)
+        => await RunQuery(family.PhotoDbPath, query, commandFunc, onRun);
 
-    public void RunQuery(string dbPath, string query, Action<SqliteCommand> commandFunc, Action<SqliteDataReader> onRun) {
+    public async Task RunQuery(string dbPath, string query, Action<SqliteCommand> commandFunc, Action<SqliteDataReader> onRun) {
         using (SqliteConnection connection = new SqliteConnection($"Data Source={dbPath}")) {
             connection.Open();
 
@@ -27,7 +27,7 @@ public class SqliteContext : ISqliteContext {
                 command.CommandText = query;
                 commandFunc(command);
 
-                using (SqliteDataReader reader = command.ExecuteReader()) {
+                using (SqliteDataReader reader = await command.ExecuteReaderAsync()) {
                     while (reader.Read())
                         onRun(reader);
                 }

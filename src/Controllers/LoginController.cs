@@ -33,7 +33,7 @@ public class LoginController : _BaseController
         IActionResult response = RedirectToAction("Index", new {
             Failed = true
         });
-        AuthenticatedUser user = _userProvider.Authenticate(form.Username, form.Password);
+        AuthenticatedUser user = await _userProvider.Authenticate(form.Username, form.Password);
 
         if (user != null) {
             var claims = new List<Claim>() {

@@ -14,14 +14,14 @@ public class SqliteLibraryProvider : ILibraryProvider {
     public bool PhotosExist() => true;
     public bool VideosExist() => true;
 
-    public List<QueryPhoto> GetPhotos(Family family, string date, string cameraModel) {
+    public async Task<List<QueryPhoto>> GetPhotos(Family family, string date, string cameraModel) {
         var photos = new List<QueryPhoto>();
         string query = $"SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE Deleted = 0 AND DateTaken LIKE '{date}'";
 
         if (!string.IsNullOrWhiteSpace(cameraModel))
             query += " AND ExifModel = $cameraModel";
 
-        _context.RunQuery(family,  query,
+        await _context.RunQuery(family,  query,
             command => command.Parameters.AddWithValue("$cameraModel", cameraModel).SqliteType = SqliteType.Text,
             reader => {
                 int fileId = reader.GetOrdinal("FileId"),
@@ -41,10 +41,10 @@ public class SqliteLibraryProvider : ILibraryProvider {
         return photos;
     }
 
-    public List<string> GetCameraModels(Family family, string date) {
+    public async Task<List<string>> GetCameraModels(Family family, string date) {
         var photos = new List<string>();
 
-        _context.RunQuery(family, $"SELECT DISTINCT ExifModel FROM Photos WHERE Deleted = 0 AND DateTaken LIKE '{date}' ORDER BY ExifModel ASC",
+        await _context.RunQuery(family, $"SELECT DISTINCT ExifModel FROM Photos WHERE Deleted = 0 AND DateTaken LIKE '{date}' ORDER BY ExifModel ASC",
             reader => {
                 int exifModel = reader.GetOrdinal("ExifModel");
 
@@ -55,10 +55,10 @@ public class SqliteLibraryProvider : ILibraryProvider {
         return photos;
     }
 
-    public QueryPhoto GetPhoto(Family family, string photoId) {
+    public async Task<QueryPhoto> GetPhoto(Family family, string photoId) {
         QueryPhoto photo = new QueryPhoto();
 
-        _context.RunQuery(family, "SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE Deleted = 0 AND FileId = $fileId", command => {
+        await _context.RunQuery(family, "SELECT FileId, DateTaken, OriginalFilename FROM Photos WHERE Deleted = 0 AND FileId = $fileId", command => {
             command.Parameters.AddWithValue("$fileId", photoId).SqliteType = SqliteType.Text;
         }, reader => {
             int fileId = reader.GetOrdinal("FileId"),
@@ -76,10 +76,10 @@ public class SqliteLibraryProvider : ILibraryProvider {
         return photo;
     }
 
-    public List<DateTime> GetPhotoDates(Family family) {
+    public async Task<List<DateTime>> GetPhotoDates(Family family) {
         var dates = new List<DateTime>();
 
-        _context.RunQuery(family, "SELECT DISTINCT DateTaken FROM Photos WHERE Deleted = 0 ORDER BY DateTaken DESC", reader => {
+        await _context.RunQuery(family, "SELECT DISTINCT DateTaken FROM Photos WHERE Deleted = 0 ORDER BY DateTaken DESC", reader => {
             int dateTaken = reader.GetOrdinal("DateTaken");
 
             dates.Add(reader.GetDateTime(dateTaken));
@@ -88,8 +88,8 @@ public class SqliteLibraryProvider : ILibraryProvider {
         return dates;
     }
 
-    public void Delete(Family family, string fileId) {
-        _context.RunQuery(family, "UPDATE Photos SET Deleted = 1 WHERE FileId = $fileId",
+    public async Task Delete(Family family, string fileId) {
+        await _context.RunQuery(family, "UPDATE Photos SET Deleted = 1 WHERE FileId = $fileId",
             command => command.Parameters.AddWithValue("$fileId", fileId).SqliteType = SqliteType.Text,
             reader => { }
         );
