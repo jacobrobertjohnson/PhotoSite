@@ -13,6 +13,7 @@ public class PhotoReader {
 
     public byte[] Contents { get => File.ReadAllBytes(_photoPath); }
     public string MimeType { get; private set; } = "image/jpeg";
+    public string FilePath { get => _photoPath;  }
 
     string makeFullSizePath(Family family, QueryPhoto photo)
         => makeImagePath(family.PhotoFilePath, photo);

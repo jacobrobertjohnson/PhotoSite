@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NUglify.Helpers;
 using PhotoSite.Authentication;
 using PhotoSite.Library;
 using PhotoSite.Models;
 using PhotoSite.Thumbnails;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using System.IO;
+using System.Text;
 
 namespace PhotoSite.Controllers;
 
@@ -161,6 +164,7 @@ public class PhotosController : _BaseController
         string prevPhotoUrl = null,
             nextPhotoUrl = null;
         QueryPhoto photo = await getPhotoByFilename(family, filename);
+        var contents = new PhotoReader(family, photo);
         string photoDate = $"{photo.DateTaken.Month}/%/{photo.DateTaken.Year}%";
         List<string> cameraModels = await _libraryProvider.GetCameraModels(family, photoDate);
 
@@ -183,11 +187,67 @@ public class PhotosController : _BaseController
             PrevPhotoUrl = prevPhotoUrl,
             NextPhotoUrl = nextPhotoUrl,
             Filename = photo.Id + photo.Extension,
-            FamilyId = family.Id
+            FamilyId = family.Id,
+            ExifData = GetExifDataForPhoto(contents),
         });
     }
 
-    string makePhotoUrl(string familyId, QueryPhoto photo)
+    List<ExifDatum> GetExifDataForPhoto(PhotoReader contents)
+    {
+        List<ExifDatum> result = new();
+
+        using (var image = Image.Load(contents.FilePath))
+            foreach (var exifProp in image.Metadata.ExifProfile.Values)
+                if (ShouldAddExifProp(exifProp))
+                    result.Add(new ExifDatum()
+                    {
+                        Key = $"{exifProp.Tag}",
+                        Value = GetExifValue(exifProp.GetValue()),
+                    });
+
+        return result
+            .OrderBy(GetExifOrder)
+            .ToList();
+    }
+
+    bool ShouldAddExifProp(IExifValue exifProp)
+        => !exifProp.IsArray
+            && exifProp.GetValue() != null;
+
+	string GetExifValue(object value)
+	{
+        if (value == null)
+            return "";
+       else if (value.GetType() == typeof(string))
+        {
+            if (DateTime.TryParse((string)value, out DateTime date))
+                return date.ToString("dddd, MMMM d, yyyy at hh:mm:ss tt K");
+        }
+
+        return $"{value}";
+	}
+
+	int GetExifOrder(ExifDatum exifProp)
+    {
+        Dictionary<string, int> orders = new()
+        {
+            { "DateTimeOriginal", 0 },
+            { "DateTimeDigitized", 10 },
+            { "DateTime", 20 },
+            { "Make", 30 },
+            { "Model", 40 },
+            { "ExposureTime", 40 },
+            { "FNumber", 50 },
+            { "FocalLength", 60 },
+        };
+
+        if (orders.ContainsKey(exifProp.Key))
+            return orders[exifProp.Key];
+
+        return 99999;
+    }
+
+	string makePhotoUrl(string familyId, QueryPhoto photo)
         => $"/Photos/{familyId}/FullSize/{photo.Id}{photo.Extension}";  
 
     string makeViewerUrl(string familyId, QueryPhoto photo)

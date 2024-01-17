@@ -69,6 +69,13 @@ public class Photos_Viewer_AspModel : ModelBase {
     public string NextPhotoUrl { get; set; }
     public string Filename { get; set; }
     public string FamilyId { get; internal set; }
+    public List<ExifDatum> ExifData { get; set; } = new();
+}
+
+public class ExifDatum
+{
+    public string Key { get; set; }
+    public string Value { get; set; }
 }
 
 public class DeletePhoto_Request {
