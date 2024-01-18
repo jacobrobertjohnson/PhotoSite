@@ -117,7 +117,7 @@
     list-style-type: none;
 }
 
-.sidebar-section li a {
+.sidebar-section li .sidebar-section-item {
     text-decoration: none;
     color: black;
     display: block;

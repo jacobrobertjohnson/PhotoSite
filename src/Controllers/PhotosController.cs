@@ -197,13 +197,14 @@ public class PhotosController : _BaseController
         List<ExifDatum> result = new();
 
         using (var image = Image.Load(contents.FilePath))
-            foreach (var exifProp in image.Metadata.ExifProfile.Values)
-                if (ShouldAddExifProp(exifProp))
-                    result.Add(new ExifDatum()
-                    {
-                        Key = $"{exifProp.Tag}",
-                        Value = GetExifValue(exifProp.GetValue()),
-                    });
+            if (image.Metadata.ExifProfile != null)
+                foreach (var exifProp in image.Metadata.ExifProfile.Values)
+                    if (ShouldAddExifProp(exifProp))
+                        result.Add(new ExifDatum()
+                        {
+                            Key = $"{exifProp.Tag}",
+                            Value = GetExifValue(exifProp.GetValue()),
+                        });
 
         return result
             .OrderBy(GetExifOrder)

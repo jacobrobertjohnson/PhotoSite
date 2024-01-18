@@ -50,7 +50,7 @@
 											monthClass = "selected-sidebar-item";
 
 										<text>
-											<li class="@monthClass"><a class="month-link" href="@month.Url">@month.Label</a></li>
+											<li class="@monthClass"><a class="sidebar-section-item month-link" href="@month.Url">@month.Label</a></li>
 										</text>
 									}
 								</ul>
@@ -82,7 +82,7 @@
 			}
 
 			<li class="@allCameraModelsClass">
-				<a href="?cameraModel=">All Camera Models</a>
+				<a class="sidebar-section-item" href="?cameraModel=">All Camera Models</a>
 			</li>
 
 			@foreach (var cameraModel in Model.CameraModels) {
@@ -93,7 +93,7 @@
 
 				<text>
 					<li class="@cameraModelClass">
-						<a href="?cameraModel=@cameraModel">@cameraModel</a>
+						<a class="sidebar-section-item" href="?cameraModel=@cameraModel">@cameraModel</a>
 					</li>
 				</text>
 			}

@@ -1,18 +1,42 @@
 window.multiSelect = (function() {
     let _$dependentBtns = document.getElementsByClassName("requires-selection"),
+        _$allCheckboxes = document.querySelectorAll(".photo-thumbnail-select"),
         _$selectAllBtn = document.getElementById("select-all"),
         _$unselectAllBtn = document.getElementById("unselect-all"),
         _$selectedCheckboxes = [],
-        _selectedFiles = [];
+        _selectedFiles = [],
+        _lastCheckboxClicked = null,
+        _selectionInProgress = false;
 
-    document.addEventListener("change", function() {
+    document.addEventListener("change", function (e) {
+        if (e.shiftKey && _lastCheckboxClicked) {
+            let inRange = true;
+
+            _selectionInProgress = true;
+
+            for (let i = 0; i < _$allCheckboxes.length; i++) {
+                if (_$allCheckboxes[i] == _lastCheckboxClicked) {
+                    inRange = true;
+                    continue;
+                }
+
+                if (inRange)
+                    e.target.checked = true;
+
+                if (_$allCheckboxes[i] == e.target)
+                    inRange = false;
+            }
+        } else {
+            _lastCheckboxClicked = e.target;
+            _selectionInProgress = false;
+        }
+
         update();
     })
 
     update();
 
     function update() {
-        _$allCheckboxes = document.querySelectorAll(".photo-thumbnail-select"),
         _$selectedCheckboxes = document.querySelectorAll(".photo-thumbnail-select:checked"),
         _selectedFiles = [];
 

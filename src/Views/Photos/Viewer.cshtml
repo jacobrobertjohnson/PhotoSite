@@ -31,20 +31,25 @@
 </style>
 
 @section Sidebar {
-	<div class="sidebar-section collapsible-sidebar-section">
-		<label for="exif-data-collapsible" class="sidebar-section-title">📷 EXIF Data</label>
-		<input type="checkbox" id="exif-data-collapsible" />
-		<ul class="collapsible-sidebar-links" id="exif-data">
-			@foreach (var exifDatum in Model.ExifData)
-			{
-				<text>
-					<li>
-						<a><strong>@exifDatum.Key:</strong> @exifDatum.Value</a>
-					</li>
-				</text>
-			}
-		</ul>
-	</div>
+	@if (Model.ExifData.Count > 0)
+	{
+		<text>
+			<div class="sidebar-section collapsible-sidebar-section">
+				<label for="exif-data-collapsible" class="sidebar-section-title">📷 EXIF Data</label>
+				<input type="checkbox" id="exif-data-collapsible" />
+				<ul class="collapsible-sidebar-links" id="exif-data">
+					@foreach (var exifDatum in Model.ExifData)
+					{
+						<text>
+							<li>
+								<div class="sidebar-section-item"><strong>@exifDatum.Key:</strong> @exifDatum.Value</div>
+							</li>
+						</text>
+					}
+				</ul>
+			</div>
+		</text>
+	}
 }
 
 @section Footer {
