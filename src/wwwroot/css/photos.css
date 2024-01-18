@@ -224,8 +224,23 @@ body.has-sidebar .sidebar{
     width: 1.25rem;
 }
 
-.photo-thumbnail-select:checked {
+.photo-thumbnail-select:checked,
+.photo-thumbnails.has-selection .photo-thumbnail-select {
     display: unset;
+}
+
+.photo-thumbnail .photo-blocker {
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: none;
+}
+
+.photo-thumbnails.has-selection .photo-blocker {
+    display: block;
 }
 
 .footer {
@@ -234,12 +249,10 @@ body.has-sidebar .sidebar{
     bottom: 0;
     left: 0;
     right: 0;
-
     display: flex;
     flex-direction: row;
     align-items: stretch;
     justify-content: space-between;
-    
     background: whitesmoke;
     border-top: 1px solid lightgray;
     border-left: 1px solid lightgray;

@@ -1,34 +1,46 @@
 window.multiSelect = (function() {
-    let _$dependentBtns = document.getElementsByClassName("requires-selection"),
+    let _$thumbContainer = document.getElementsByClassName("photo-thumbnails")[0],
+        _$dependentBtns = document.getElementsByClassName("requires-selection"),
         _$allCheckboxes = document.querySelectorAll(".photo-thumbnail-select"),
         _$selectAllBtn = document.getElementById("select-all"),
         _$unselectAllBtn = document.getElementById("unselect-all"),
+        _checkboxOrder = {},
         _$selectedCheckboxes = [],
         _selectedFiles = [],
         _lastCheckboxClicked = null,
-        _selectionInProgress = false;
+        _shiftKeyDown = false;
+
+    _$allCheckboxes.forEach(function ($checkbox, index) {
+        _checkboxOrder[$checkbox.id] = index;
+    });
+
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Shift")
+            _shiftKeyDown = true;
+    });
+
+    document.addEventListener("keyup", function (e) {
+        if (e.key === "Shift")
+            setTimeout(function () {
+                _shiftKeyDown = false;
+            }, 500);
+    });
 
     document.addEventListener("change", function (e) {
-        if (e.shiftKey && _lastCheckboxClicked) {
-            let inRange = true;
+        if (_shiftKeyDown && _lastCheckboxClicked) {
+            let startAt = _checkboxOrder[_lastCheckboxClicked.id],
+                endAt = _checkboxOrder[e.target.id];
 
-            _selectionInProgress = true;
+            if (startAt > endAt) {
+                startAt = _checkboxOrder[e.target.id];
+                endAt = _checkboxOrder[_lastCheckboxClicked.id];
+            }
 
-            for (let i = 0; i < _$allCheckboxes.length; i++) {
-                if (_$allCheckboxes[i] == _lastCheckboxClicked) {
-                    inRange = true;
-                    continue;
-                }
-
-                if (inRange)
-                    e.target.checked = true;
-
-                if (_$allCheckboxes[i] == e.target)
-                    inRange = false;
+            for (let i = startAt; i <= endAt; i++) {
+                _$allCheckboxes[i].checked = _lastCheckboxClicked.checked;
             }
         } else {
             _lastCheckboxClicked = e.target;
-            _selectionInProgress = false;
         }
 
         update();
@@ -59,6 +71,11 @@ window.multiSelect = (function() {
             _$selectAllBtn.disabled = false;
             _$unselectAllBtn.disabled = true;
         }
+
+        if (_$selectedCheckboxes.length)
+            _$thumbContainer.classList.add("has-selection");
+        else
+            _$thumbContainer.classList.remove("has-selection");
     }
 
     function setSelected(checked) {
