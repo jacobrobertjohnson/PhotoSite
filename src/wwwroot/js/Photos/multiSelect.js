@@ -1,5 +1,7 @@
 window.multiSelect = (function() {
-    let _$thumbContainer = document.getElementsByClassName("photo-thumbnails")[0],
+    let _$thumbContainer = document.body,
+        _$mobileSelectOn = document.getElementById("enable-selection"),
+        _$mobileSelectOff = document.getElementById("disable-selection"),
         _$dependentBtns = document.getElementsByClassName("requires-selection"),
         _$allCheckboxes = document.querySelectorAll(".photo-thumbnail-select"),
         _$selectAllBtn = document.getElementById("select-all"),
@@ -44,7 +46,16 @@ window.multiSelect = (function() {
         }
 
         update();
-    })
+    });
+
+    _$mobileSelectOn.addEventListener("click", function () {
+        _$thumbContainer.classList.add("has-selection");
+    });
+
+    _$mobileSelectOff.addEventListener("click", function () {
+        setSelected(false);
+        _$thumbContainer.classList.remove("has-selection");
+    });
 
     update();
 
