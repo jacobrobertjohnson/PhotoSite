@@ -98,8 +98,12 @@
 			});
 
 			document.addEventListener('touchend', function(e) {
-				_touchEndX = e.changedTouches[0].screenX
-				checkDirection()
+				let sidebarVisible = !!document.querySelector("body.has-sidebar");
+			
+				if (!sidebarVisible) {
+					_touchEndX = e.changedTouches[0].screenX
+					checkDirection();
+				}
 			});
 
 			function checkDirection() {
