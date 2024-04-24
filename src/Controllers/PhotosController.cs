@@ -56,7 +56,7 @@ public class PhotosController : _BaseController
             dateLabel = $"{year}";
 
             if (month > -1) {
-                date = $"{month}/" + date;
+                date = $"{month:00}/" + date;
                 dateLabel = _monthNames[month] + " " + dateLabel;
             }
 

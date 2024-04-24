@@ -6,7 +6,7 @@ namespace PhotoSite.Crypto;
 public class CryptoProvider : ICryptoProvider {
     public string HashValue(string toHash, string salt, string machineKey) {
         var hash = Rfc2898DeriveBytes.Pbkdf2(
-            Encoding.UTF8.GetBytes(toHash),
+            Encoding.UTF8.GetBytes(toHash + machineKey),
             Encoding.Default.GetBytes(salt),
             350000,
             HashAlgorithmName.SHA512,
