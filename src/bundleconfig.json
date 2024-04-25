@@ -3,7 +3,8 @@
         "outputFileName": "wwwroot/css/site.min.css",
         "inputFiles": [
             "wwwroot/css/site.css",
-            "wwwroot/css/photos.css"
+            "wwwroot/css/photos.css",
+            "wwwroot/css/overrides.css"
         ],
         "minify": {
             "enabled": true,
@@ -14,7 +15,8 @@
         "outputFileName": "wwwroot/css/home.min.css",
         "inputFiles": [
             "wwwroot/css/site.css",
-            "wwwroot/css/home.css"
+            "wwwroot/css/home.css",
+            "wwwroot/css/overrides.css"
         ],
         "minify": {
             "enabled": true,
@@ -26,6 +28,7 @@
         "inputFiles": [
             "wwwroot/js/Photos/sidebar.js",
             "wwwroot/js/Photos/imageSizer.js",
+            "wwwroot/js/Photos/imageViewer.js",
             "wwwroot/js/Photos/thumbnails.js",
             "wwwroot/js/Photos/multiSelect.js"
         ],

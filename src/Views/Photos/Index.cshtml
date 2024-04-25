@@ -21,87 +21,89 @@
 }
 
 @section Sidebar {
-	<div class="sidebar-section collapsible-sidebar-section">
-		<a href="/" class="sidebar-section-title">🏠 Home Page</a>
-	</div>
-
-	<div class="sidebar-section collapsible-sidebar-section">
-		<label for="year-collapsible" class="sidebar-section-title">🗓️ Date Taken</label>
-		<input type="checkbox" id="year-collapsible" />
-
-		<div class="collapsible-sidebar-links padding-bottom-halfrem" id="nav">
-			@foreach (var year in Model.Sidebar) {
-				string yearClass = "sidebar-section inner-sidebar-section";
-
-				if (year.Label == $"{Model.Year}")
-					yearClass += " selected-sidebar-section";
-
-				<text>
-					<div class="@yearClass">
-						<a class="sidebar-section-title" href="@year.Url">@year.Label</a>
-
-						@if (year.Children != null && year.Children.Count > 0) {
-							<text>
-								<ul>
-									@foreach (var month in year.Children) {
-										string monthClass = "";
-
-										if (month.Url.Contains($"{Model.Year}/{Model.Month}"))
-											monthClass = "selected-sidebar-item";
-
-										<text>
-											<li class="@monthClass"><a class="sidebar-section-item month-link" href="@month.Url">@month.Label</a></li>
-										</text>
-									}
-								</ul>
-							</text>
-						}
-					</div>
-				</text>
-			}
+	<div id="photo-list-sidebar">
+		<div class="sidebar-section collapsible-sidebar-section">
+			<a href="/" class="sidebar-section-title">🏠 Home Page</a>
 		</div>
-	</div>	
 
-	@{
-		string cameraModelSectionClass = "sidebar-section collapsible-sidebar-section";
+		<div class="sidebar-section collapsible-sidebar-section">
+			<label for="year-collapsible" class="sidebar-section-title">🗓️ Date Taken</label>
+			<input type="checkbox" id="year-collapsible" />
 
-			if (!string.IsNullOrWhiteSpace(Model.CameraModel))
-				cameraModelSectionClass += " selected-sidebar-section";
-	}
+			<div class="collapsible-sidebar-links padding-bottom-halfrem" id="nav">
+				@foreach (var year in Model.Sidebar) {
+					string yearClass = "sidebar-section inner-sidebar-section";
 
-	<div class="@cameraModelSectionClass">
-		<label for="camera-model-collapsible" class="sidebar-section-title">📷 Camera Model</label>
-		<input type="checkbox" id="camera-model-collapsible" />
+					if (year.Label == $"{Model.Year}")
+						yearClass += " selected-sidebar-section";
 
-		<ul class="collapsible-sidebar-links" id="camera-models">
-			@{
-				string allCameraModelsClass = "";
+					<text>
+						<div class="@yearClass">
+							<a class="sidebar-section-title" href="@year.Url">@year.Label</a>
 
-				if (string.IsNullOrWhiteSpace(Model.CameraModel))
-					allCameraModelsClass = "selected-sidebar-item";
-			}
+							@if (year.Children != null && year.Children.Count > 0) {
+								<text>
+									<ul>
+										@foreach (var month in year.Children) {
+											string monthClass = "";
 
-			<li class="@allCameraModelsClass">
-				<a class="sidebar-section-item" href="?cameraModel=">All Camera Models</a>
-			</li>
+											if (month.Url.Contains($"{Model.Year}/{Model.Month}"))
+												monthClass = "selected-sidebar-item";
 
-			@foreach (var cameraModel in Model.CameraModels) {
-				string cameraModelClass = "";
+											<text>
+												<li class="@monthClass"><a class="sidebar-section-item month-link" href="@month.Url">@month.Label</a></li>
+											</text>
+										}
+									</ul>
+								</text>
+							}
+						</div>
+					</text>
+				}
+			</div>
+		</div>	
 
-				if (cameraModel == Model.CameraModel)
-					cameraModelClass = "selected-sidebar-item";
+		@{
+			string cameraModelSectionClass = "sidebar-section collapsible-sidebar-section";
 
-				<text>
-					<li class="@cameraModelClass">
-						<a class="sidebar-section-item" href="?cameraModel=@cameraModel">@cameraModel</a>
-					</li>
-				</text>
-			}
-		</ul>
-	</div>	
+				if (!string.IsNullOrWhiteSpace(Model.CameraModel))
+					cameraModelSectionClass += " selected-sidebar-section";
+		}
 
-	<div class="sidebar-section collapsible-sidebar-section">
-		<a href="/" class="sidebar-section-title">🗑️ Deleted Items</a>
+		<div class="@cameraModelSectionClass">
+			<label for="camera-model-collapsible" class="sidebar-section-title">📷 Camera Model</label>
+			<input type="checkbox" id="camera-model-collapsible" />
+
+			<ul class="collapsible-sidebar-links" id="camera-models">
+				@{
+					string allCameraModelsClass = "";
+
+					if (string.IsNullOrWhiteSpace(Model.CameraModel))
+						allCameraModelsClass = "selected-sidebar-item";
+				}
+
+				<li class="@allCameraModelsClass">
+					<a class="sidebar-section-item" href="?cameraModel=">All Camera Models</a>
+				</li>
+
+				@foreach (var cameraModel in Model.CameraModels) {
+					string cameraModelClass = "";
+
+					if (cameraModel == Model.CameraModel)
+						cameraModelClass = "selected-sidebar-item";
+
+					<text>
+						<li class="@cameraModelClass">
+							<a class="sidebar-section-item" href="?cameraModel=@cameraModel">@cameraModel</a>
+						</li>
+					</text>
+				}
+			</ul>
+		</div>	
+
+		<div class="sidebar-section collapsible-sidebar-section">
+			<a href="/" class="sidebar-section-title">🗑️ Deleted Items</a>
+		</div>
 	</div>
 }
 
@@ -111,12 +113,19 @@
 	</text> 
 } else {
 	<text>
-		<section class="photo-date">
+		<section class="photo-date" id="photo-list">
 			<div class="photo-thumbnails" id="thumbnails">
 				@foreach (var thumbnail in Model.Thumbnails) {
 					<text>
-						<div class="photo-thumbnail" id="@thumbnail.Id" data-background-url="@thumbnail.ThumbnailUrl">
-							<a href="@thumbnail.ViewerUrl" target="_blank">&nbsp;</a>
+						<div class="photo-thumbnail"
+							id="@thumbnail.Id"
+							data-background-url="@thumbnail.ThumbnailUrl"
+							data-fullsize-url="@Url.Action("FullSize", "Photos", new {
+								familyId = Model.FamilyId,
+								filename = thumbnail.Filename,
+							})"
+						>
+							@* <a href="@thumbnail.ViewerUrl" target="_blank">&nbsp;</a> *@
 
 							<label for="Select_@thumbnail.Id" class="photo-blocker"></label>
 
@@ -126,11 +135,19 @@
 				}
 			</div>
 		</section>
+
+		<section class="photo-viewer" id="photo-viewer">
+			<div class="photo-viewer-adjacent photo-viewer-prev" id="prev-photo">&lt;</div>
+
+			<div class="photo-viewer-adjacent photo-viewer-next" id="next-photo">&gt;</div>
+
+			<div id="close-photo-viewer" class="close-photo-viewer">x</div>
+		</section>
 	</text>
 }
 
 @section Footer {
-	<div class="footer-left">
+	<div class="footer-left" id="photo-list-footer-left">
 		<button class="requires-no-selection-mobile" id="enable-selection">☑️ Select</button>
 		<button class="requires-selection-mobile" id="disable-selection">❌ Cancel</button>
 		<button class="select-all hide-if-disabled" id="unselect-all">☐ Clear All</button>
@@ -139,16 +156,24 @@
 		<button class="requires-selection" id="delete-photos">🗑️ <span class="hide-on-mobile">&nbsp;Delete</span></button>
 	</div>
 
-	<div class="footer-right">
+	<div class="footer-right" id="photo-list-footer-right">
 		<button class="zoom-button" id="zoom-minus">-</button>
 		<div class="hide-on-mobile zoom-label">Zoom</div>
 		<button class="zoom-button" id="zoom-plus">+</button>
+	</div>
+
+	<div class="footer-left" id="photo-viewer-footer-left">
+		<a id="photo-viewer-download-button">
+			<button type="button">💾 Download</button>
+		</a>
+		
+		<button type="button" id="photo-viewer-delete-button">🗑️ Delete</button>
 	</div>
 }
 
 @section Scripts {
 	<script>
-		(function() {
+		window.photoList = (function() {
 			thumbnails.render();
 
 			document.getElementById("select-all").addEventListener("click", function() {
@@ -160,24 +185,30 @@
 			});
 
 			document.getElementById("delete-photos").addEventListener("click", function() {
-				let photoCount = multiSelect.getSelectedFiles().length,
-					s = photoCount > 1 ? "s" : "";
-
-				if (confirm(photoCount + " photo" + s + " will be deleted. Are you sure you want to continue?"))
-					deletePhotos(false);
+				deletePhotos(null, false);
 			});
 
-			function deletePhotos(permanent) {
-				fetch("@deleteUrl", {
-					method: "PUT",
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						fileIds: multiSelect.getSelectedFiles(),
-						deletePermanently: permanent
-					})
-				});
+			function deletePhotos(fileIds, permanent) {
+				fileIds = fileIds || multiSelect.getSelectedFiles();
 
-				clearSelectedFiles();
+				let photoCount = fileIds.length,
+					s = photoCount > 1 ? "s" : "";
+
+				if (confirm(photoCount + " photo" + s + " will be deleted. Are you sure you want to continue?")) {
+					fetch("@deleteUrl", {
+						method: "PUT",
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							fileIds: fileIds || multiSelect.getSelectedFiles(),
+							deletePermanently: permanent
+						})
+					});
+
+					clearSelectedFiles();
+					return true;
+				}
+
+				return false;
 			}
 
 			function clearSelectedFiles() {
@@ -194,6 +225,10 @@
 				let $photo = $checkbox.parentElement;
 
 				$photo.parentElement.removeChild($photo);
+			}
+
+			return {
+				deletePhotos: deletePhotos
 			}
 		})();
 	</script>
