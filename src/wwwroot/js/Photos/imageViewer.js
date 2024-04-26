@@ -4,7 +4,8 @@
         _$closeButton = document.getElementById("close-photo-viewer"),
         _$prevButton = document.getElementById("prev-photo"),
         _$nextButton = document.getElementById("next-photo"),
-        _$downloadButton = document.getElementById("photo-viewer-download-button");
+        _$downloadButton = document.getElementById("photo-viewer-download-button"),
+        _scrollState;
 
         _$hideWhenOpen = [
             _$photoList,
@@ -21,12 +22,15 @@
         _$thumbnail = null;
 
     _$photoList.addEventListener("click", function(e) {
-        if (e.target.classList.contains("photo-thumbnail"))
+        if (e.target.classList.contains("photo-thumbnail")) {
+            _scrollState = document.scrollingElement.scrollTop;
             update(e.target);
+        }
     });
 
     _$closeButton.addEventListener("click", function() {
         update(null);
+        document.scrollingElement.scrollTop = _scrollState;
     });
 
     _$prevButton.addEventListener("click", function() {
