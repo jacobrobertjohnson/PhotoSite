@@ -145,7 +145,10 @@ public class PhotosController : _BaseController
     [Route("/Photos/{familyId}/FullSize/{filename}")]
     public async Task<IActionResult> FullSize(string familyId, string filename, bool download = false) {
         Family family = _families[familyId];
+        string times = "";
+        DateTime start = DateTime.Now;
         QueryPhoto photo = await getPhotoByFilename(family, filename);
+        times += $"Sqlite: {DateTime.Now - start}. ";
         PhotoReader contents;
 
         if (download) {
@@ -155,7 +158,12 @@ public class PhotosController : _BaseController
             contents = new Thumbnail(family, photo, 1080);
         }
 
-        return File(contents.Contents, contents.MimeType);
+        start = DateTime.Now;
+        var response = File(contents.Contents, contents.MimeType);
+        times += $"Filesystem: {DateTime.Now - start}. ";
+
+        HttpContext.Response.Headers.Add("x-times", times);
+        return response;
     }
 
     [Route("/Photos/{familyId}/Viewer/{filename}")]
