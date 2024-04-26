@@ -135,20 +135,20 @@ public class PhotosController : _BaseController
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = ONE_YEAR_IN_SECONDS)]
     public async Task<IActionResult> Thumbnail(string familyId, int size, string filename) {
         Family family = _families[familyId];
-        QueryPhoto photo = await getPhotoByFilename(family, filename);
+        QueryPhoto photo = await getPhotoByFilename(family, filename).ConfigureAwait(false);
 
         Thumbnail thumb = new Thumbnail(family, photo, size);
 
-        return File(thumb.Contents, thumb.MimeType);
+        return File(
+            await thumb.GetContents().ConfigureAwait(false),
+            thumb.MimeType
+        );
     }
 
     [Route("/Photos/{familyId}/FullSize/{filename}")]
     public async Task<IActionResult> FullSize(string familyId, string filename, bool download = false) {
         Family family = _families[familyId];
-        string times = "";
-        DateTime start = DateTime.Now;
-        QueryPhoto photo = await getPhotoByFilename(family, filename);
-        times += $"Sqlite: {DateTime.Now - start}. ";
+        QueryPhoto photo = await getPhotoByFilename(family, filename).ConfigureAwait(false);
         PhotoReader contents;
 
         if (download) {
@@ -158,12 +158,10 @@ public class PhotosController : _BaseController
             contents = new Thumbnail(family, photo, 1080);
         }
 
-        start = DateTime.Now;
-        var response = File(contents.Contents, contents.MimeType);
-        times += $"Filesystem: {DateTime.Now - start}. ";
-
-        HttpContext.Response.Headers.Add("x-times", times);
-        return response;
+        return File(
+            await contents.GetContents().ConfigureAwait(false),
+            contents.MimeType
+        );
     }
 
     [Route("/Photos/{familyId}/Viewer/{filename}")]
@@ -290,6 +288,6 @@ public class PhotosController : _BaseController
     async Task<QueryPhoto> getPhotoByFilename(Family family, string filename) {
         string fileId = Path.GetFileNameWithoutExtension(filename);
 
-        return await _libraryProvider.GetPhoto(family, fileId);
+        return await _libraryProvider.GetPhoto(family, fileId).ConfigureAwait(false);
     }
 }

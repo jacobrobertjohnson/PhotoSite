@@ -71,7 +71,7 @@ public class SqliteLibraryProvider : ILibraryProvider {
             photo.DateTaken = reader.GetDateTime(dateTaken);
             photo.Extension = Path.GetExtension(filename);
             photo.OriginalFilename = filename;
-        });
+        }).ConfigureAwait(false);
 
         return photo;
     }

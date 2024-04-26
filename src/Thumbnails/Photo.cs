@@ -11,7 +11,7 @@ public class PhotoReader {
         _photoPath = _fullsizePath;
     }
 
-    public byte[] Contents { get => File.ReadAllBytes(_photoPath); }
+    public async Task<byte[]> GetContents() => await File.ReadAllBytesAsync(_photoPath).ConfigureAwait(false);
     public string MimeType { get; private set; } = "image/jpeg";
     public string FilePath { get => _photoPath;  }
 

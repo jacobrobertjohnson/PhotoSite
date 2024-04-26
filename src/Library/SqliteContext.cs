@@ -17,7 +17,7 @@ public class SqliteContext : ISqliteContext {
         => await RunQuery(dbPath, query, command => {}, onRun);
 
     public async Task RunQuery(Family family, string query, Action<SqliteCommand> commandFunc, Action<SqliteDataReader> onRun)
-        => await RunQuery(family.PhotoDbPath, query, commandFunc, onRun);
+        => await RunQuery(family.PhotoDbPath, query, commandFunc, onRun).ConfigureAwait(false);
 
     public async Task RunQuery(string dbPath, string query, Action<SqliteCommand> commandFunc, Action<SqliteDataReader> onRun) {
         using (SqliteConnection connection = new SqliteConnection($"Data Source={dbPath}")) {
@@ -27,7 +27,7 @@ public class SqliteContext : ISqliteContext {
                 command.CommandText = query;
                 commandFunc(command);
 
-                using (SqliteDataReader reader = await command.ExecuteReaderAsync()) {
+                using (SqliteDataReader reader = await command.ExecuteReaderAsync().ConfigureAwait(false)) {
                     while (reader.Read())
                         onRun(reader);
                 }
