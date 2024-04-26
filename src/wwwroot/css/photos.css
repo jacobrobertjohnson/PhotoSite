@@ -312,6 +312,12 @@ body.has-sidebar .sidebar{
     bottom: 0;
 }
 
+.photo-viewer-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
 .close-photo-viewer {
     right: 0;
     top: 0;

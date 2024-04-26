@@ -1,6 +1,7 @@
 (function() {
     let _$photoList = document.getElementById("photo-list"),
         _$viewer = document.getElementById("photo-viewer"),
+        _$image = document.getElementById("photo-viewer-image"),
         _$closeButton = document.getElementById("close-photo-viewer"),
         _$prevButton = document.getElementById("prev-photo"),
         _$nextButton = document.getElementById("next-photo"),
@@ -64,7 +65,7 @@
         if (open) {
             let fullsizeUrl = _$thumbnail.getAttribute("data-fullsize-url");
 
-            _$viewer.style["background-image"] = "url('" + fullsizeUrl + "')"
+            _$image.src = fullsizeUrl;
             _$downloadButton.setAttribute("href", fullsizeUrl + "?download=true");
 
             setVisibility([_$prevButton], _$thumbnail.previousElementSibling);
