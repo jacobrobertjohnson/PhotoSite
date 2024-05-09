@@ -78,7 +78,9 @@ public class PhotosController : _BaseController
             DateLabel = dateLabel,
             CameraModel = cameraModel,
             Year = year,
-            Month = month
+            Month = month,
+            CanDelete = _families[familyId].Photos.Delete,
+            CanDeletePermanently = _families[familyId].Photos.DeletePermanently,
         });
 
         return response;
@@ -263,10 +265,14 @@ public class PhotosController : _BaseController
     [Route("/Photos/{familyId}")]
     public async Task<IActionResult> DeletePhotos(string familyId, [FromBody] DeletePhoto_Request request) {
         Family family = _photoFamilies[familyId];
+        UserPermissions perms = _families[familyId];
+
+        if (!perms.Photos.Delete)
+            return BadRequest();
 
         foreach (string filename in request.fileIds) {
             try {
-                await deletePhoto(family, filename, request.deletePermanently);
+                await deletePhoto(family, filename, perms.Photos.DeletePermanently && request.deletePermanently);
             } catch { }
         }
 

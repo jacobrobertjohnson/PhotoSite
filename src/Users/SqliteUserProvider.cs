@@ -96,13 +96,15 @@ public class SqliteUserProvider : IUserProvider {
         );
     }
 
-    public async Task<Users_Index_User[]> GetAllUsers() {
+    public async Task<Users_Index_User[]> GetAllUsers(int userId) {
         List<Users_Index_User> users = new();
 
         await _context.RunQuery(_userDbPath,
-            "SELECT UserId, Username FROM User",
+            "SELECT UserId, Username FROM User WHERE UserId <> $userId",
 
-            command => {},
+            command => {
+                command.Parameters.AddWithValue("$userId", userId).SqliteType = SqliteType.Integer;
+            },
 
             reader => {
                 int userId = reader.GetOrdinal("UserId"),
@@ -184,12 +186,14 @@ public class SqliteUserProvider : IUserProvider {
     public async Task UpdateUser(int userId, Users_User_Model body) {
         await _context.RunQuery(_userDbPath,
             "UPDATE User " +
-                "SET Enabled = $enabled " +
+                "SET Enabled = $enabled, " +
+                    "UserAdmin = $userAdmin " +
             "WHERE  UserId = $userId ",
 
             command => {
                 command.Parameters.AddWithValue("$userId", userId).SqliteType = SqliteType.Text;
                 command.Parameters.AddWithValue("$enabled", body.Enabled ? 1 : 0).SqliteType = SqliteType.Integer;
+                command.Parameters.AddWithValue("$userAdmin", body.UserAdmin ? 1 : 0).SqliteType = SqliteType.Integer;
             },
 
             reader => {}

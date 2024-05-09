@@ -28,6 +28,7 @@ public abstract class _BaseController : Controller {
 
     protected readonly Dictionary<string, UserPermissions> _families;
     protected readonly bool _userAdmin;
+    protected readonly int _userId;
 
     public _BaseController(IServiceProvider dependencies)
     {
@@ -38,5 +39,6 @@ public abstract class _BaseController : Controller {
             _authenticator.GetClaimValue("families") ?? "{}");
 
         _userAdmin = bool.Parse(_authenticator.GetClaimValue("userAdmin") ?? "false");
+        _userId = int.Parse(_authenticator.GetClaimValue("userId") ?? "-1");
     }
 }

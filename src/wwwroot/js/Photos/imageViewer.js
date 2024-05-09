@@ -14,7 +14,7 @@
             document.getElementById("photo-list-footer-right"),
             document.getElementById("photo-list-sidebar")
         ],
-        
+
         _$showWhenOpen = [
             _$viewer,
             document.getElementById("photo-viewer-footer-left")
@@ -22,27 +22,27 @@
 
         _$thumbnail = null;
 
-    _$photoList.addEventListener("click", function(e) {
+    _$photoList?.addEventListener("click", function(e) {
         if (e.target.classList.contains("photo-thumbnail")) {
             _scrollState = document.scrollingElement.scrollTop;
             update(e.target);
         }
     });
 
-    _$closeButton.addEventListener("click", function() {
+    _$closeButton?.addEventListener("click", function() {
         update(null);
         document.scrollingElement.scrollTop = _scrollState;
     });
 
-    _$prevButton.addEventListener("click", function() {
+    _$prevButton?.addEventListener("click", function() {
         update(_$thumbnail.previousElementSibling);
     });
 
-    _$nextButton.addEventListener("click", function() {
+    _$nextButton?.addEventListener("click", function() {
         update(_$thumbnail.nextElementSibling);
     });
-    
-    document.getElementById("photo-viewer-delete-button").addEventListener("click", function() {
+
+    document.getElementById("photo-viewer-delete-button")?.addEventListener("click", function() {
         if (window.photoList.deletePhotos([_$thumbnail.id], false)) {
             _$thumbnail.parentElement.removeChild(_$thumbnail);
             update(null);
@@ -75,6 +75,6 @@
 
     function setVisibility($els, visible) {
         for (let i = 0; i < $els.length; i++)
-            $els[i].classList[visible ? "remove" : "add"]("hidden");
+            $els[i]?.classList[visible ? "remove" : "add"]("hidden");
     }
 })();

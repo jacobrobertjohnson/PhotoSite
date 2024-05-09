@@ -65,15 +65,15 @@ public class Home_Index_Family {
             });
 
         group.Apps.Add(new Home_Index_App() {
-            Name = "Log Out",
-            Icon = "🚪",
-            Url = urlHelper.Action("Logout", "Login")
-        });
-
-        group.Apps.Add(new Home_Index_App() {
             Name = "Change Password",
             Icon = "🔑",
             Url = urlHelper.Action("Password", "UserPrefs")
+        });
+
+        group.Apps.Add(new Home_Index_App() {
+            Name = "Log Out",
+            Icon = "🚪",
+            Url = urlHelper.Action("Logout", "Login")
         });
 
         return group;

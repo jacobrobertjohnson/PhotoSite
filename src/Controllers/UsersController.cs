@@ -12,7 +12,7 @@ public class UsersController : _BaseController {
     IUserProvider _userProvider;
     ICryptoProvider _cryptoProvider;
 
-    Dictionary<string, Family> _families;
+    Dictionary<string, Family> _userFamilies;
     string _machineKey;
 
     public UsersController(IServiceProvider dependencies) : base(dependencies) {
@@ -20,7 +20,7 @@ public class UsersController : _BaseController {
 
         _machineKey = config.MachineKey;
 
-        _families = dependencies.GetService<AppSettings>()
+        _userFamilies = dependencies.GetService<AppSettings>()
             .Families
             .ToDictionary(
                 fam => fam.Id,
@@ -33,16 +33,19 @@ public class UsersController : _BaseController {
 
     public async Task<IActionResult> Index(string result)
         => View(new Users_Index_Model() {
-            Users = await _userProvider.GetAllUsers(),
+            Users = await _userProvider.GetAllUsers(_userId),
         });
 
     [HttpGet]
     [Route("[controller]/{userId}")]
     public async Task<IActionResult> GetUser(int userId)
     {
+        if (userId == _userId)
+            return RedirectToAction("Index");
+
         var user = await _userProvider.GetUser(userId) ?? new();
 
-        foreach (var family in _families)
+        foreach (var family in _userFamilies)
             if (!user.Permissions.ContainsKey(family.Key))
                 user.Permissions[family.Key] = new();
 
@@ -54,6 +57,9 @@ public class UsersController : _BaseController {
     public async Task<IActionResult> UpdateUser(int userId, [FromBody] Users_User_Model body) {
         string action = userId > 0 ? "updated." : "added.";
         string message = null;
+
+        if (userId == _userId)
+            message = "A user cannot update itself.";
 
         if (string.IsNullOrEmpty(body.Username))
             message = "A username is required.";

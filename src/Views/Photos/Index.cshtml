@@ -61,7 +61,7 @@
 					</text>
 				}
 			</div>
-		</div>	
+		</div>
 
 		@{
 			string cameraModelSectionClass = "sidebar-section collapsible-sidebar-section";
@@ -99,19 +99,22 @@
 					</text>
 				}
 			</ul>
-		</div>	
+		</div>
 
-		@*TODO: Enable this once it's implemented
-		<div class="sidebar-section collapsible-sidebar-section">
-			<a href="/" class="sidebar-section-title">🗑️ Deleted Items</a>
-		</div>*@
+		@if (Model.CanDeletePermanently) {
+			<text>
+				<div class="sidebar-section collapsible-sidebar-section">
+					<a href="/" class="sidebar-section-title">🗑️ Deleted Items</a>
+				</div>
+			</text>
+		}
 	</div>
 }
 
 @if (Model.Thumbnails.Count == 0) {
 	<text>
 		<div class="no-photos">No photos were found. Select a different date from the sidebar.</div>
-	</text> 
+	</text>
 } else {
 	<text>
 		<section class="photo-date" id="photo-list">
@@ -154,7 +157,12 @@
 		<button class="select-all hide-if-disabled" id="unselect-all">☐ Clear All</button>
 		<button class="select-all hide-if-disabled" id="select-all">☑️ Select All</button>
 		@*<button class="requires-selection" id="download-photos">💾 <span class="hide-on-mobile">&nbsp;Download</span></button>*@
-		<button class="requires-selection" id="delete-photos">🗑️ <span class="hide-on-mobile">&nbsp;Delete</span></button>
+
+		@if (Model.CanDelete) {
+			<text>
+				<button class="requires-selection" id="delete-photos">🗑️ <span class="hide-on-mobile">&nbsp;Delete</span></button>
+			</text>
+		}
 	</div>
 
 	<div class="footer-right" id="photo-list-footer-right">
@@ -167,8 +175,12 @@
 		<a id="photo-viewer-download-button">
 			<button type="button">💾 Download</button>
 		</a>
-		
-		<button type="button" id="photo-viewer-delete-button">🗑️ Delete</button>
+
+		@if (Model.CanDelete) {
+			<text>
+				<button type="button" id="photo-viewer-delete-button">🗑️ Delete</button>
+			</text>
+		}
 	</div>
 }
 
@@ -185,7 +197,7 @@
 				multiSelect.clearAll();
 			});
 
-			document.getElementById("delete-photos").addEventListener("click", function() {
+			document.getElementById("delete-photos")?.addEventListener("click", function() {
 				deletePhotos(null, false);
 			});
 

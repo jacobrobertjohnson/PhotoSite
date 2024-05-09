@@ -10,17 +10,14 @@ namespace PhotoSite.Controllers;
 [Authorize]
 public class UserPrefsController : _BaseController {
     IUserProvider _userProvider;
-    IAuthenticator _authenticator;
     ICryptoProvider _cryptoProvider;
     string _username,
         _machineKey;
-    int _userId;
 
     public UserPrefsController(IServiceProvider dependencies) : base(dependencies) {
         var authenticator = dependencies.GetService<IAuthenticator>();
 
         _username = authenticator.GetClaimValue("user");
-        _userId = int.Parse(authenticator.GetClaimValue("userId"));
 
         _userProvider = dependencies.GetService<IUserProvider>();
         _authenticator = dependencies.GetService<IAuthenticator>();
