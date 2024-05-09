@@ -6,6 +6,7 @@
         _$prevButton = document.getElementById("prev-photo"),
         _$nextButton = document.getElementById("next-photo"),
         _$downloadButton = document.getElementById("photo-viewer-download-button"),
+        _$deleteButton = document.getElementById("photo-viewer-delete-button"),
         _scrollState;
 
         _$hideWhenOpen = [
@@ -22,27 +23,27 @@
 
         _$thumbnail = null;
 
-    _$photoList?.addEventListener("click", function(e) {
+    _$photoList && _$photoList.addEventListener("click", function(e) {
         if (e.target.classList.contains("photo-thumbnail")) {
             _scrollState = document.scrollingElement.scrollTop;
             update(e.target);
         }
     });
 
-    _$closeButton?.addEventListener("click", function() {
+    _$closeButton && _$closeButton.addEventListener("click", function() {
         update(null);
         document.scrollingElement.scrollTop = _scrollState;
     });
 
-    _$prevButton?.addEventListener("click", function() {
+    _$prevButton && _$prevButton.addEventListener("click", function() {
         update(_$thumbnail.previousElementSibling);
     });
 
-    _$nextButton?.addEventListener("click", function() {
+    _$nextButton && _$nextButton.addEventListener("click", function() {
         update(_$thumbnail.nextElementSibling);
     });
 
-    document.getElementById("photo-viewer-delete-button")?.addEventListener("click", function() {
+    _$deleteButton && _$deleteButton.addEventListener("click", function() {
         if (window.photoList.deletePhotos([_$thumbnail.id], false)) {
             _$thumbnail.parentElement.removeChild(_$thumbnail);
             update(null);
@@ -75,6 +76,6 @@
 
     function setVisibility($els, visible) {
         for (let i = 0; i < $els.length; i++)
-            $els[i]?.classList[visible ? "remove" : "add"]("hidden");
+            $els[i] && $els[i].classList[visible ? "remove" : "add"]("hidden");
     }
 })();
