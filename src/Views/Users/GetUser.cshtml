@@ -1,0 +1,168 @@
+@using PhotoSite.Models;
+
+@{
+    Layout = "_HomeLayout";
+}
+
+@model Users_User_Model;
+
+<div class="families">
+    <div class="family">
+        <div class="family__header">
+            @if (Model.UserId > 0) {
+                <text>Edit @Model.Username</text>
+            } else {
+                <text>New User</text>
+            }
+        </div>
+
+        <div class="family__form">
+            <div class="input-group input-group--horizontal">
+                <input type="checkbox" id="enabled" checked="@Model.Enabled" autocomplete="off" />
+                <label for="enabled">Enabled</label>
+            </div>
+
+            <div class="input-group input-group--horizontal">
+                <input type="checkbox" id="user-admin" checked="@Model.UserAdmin" autocomplete="off" />
+                <label for="user-admin">User Admin</label>
+            </div>
+
+            @if (Model.UserId > 0) {
+                <text>
+                    <input type="hidden" id="username" value="@Model.Username" />
+                </text>
+            } else {
+                <text>
+                    <div class="input-group">
+                        <label for="username">Username</label>
+                        <input id="username" type="text" placeholder="Username" value="@Model.Username" autocomplete="off" />
+                    </div>
+                </text>
+            }
+
+            <div class="input-group">
+                <label for="new-password">New Password</label>
+                <input id="new-password" type="password" autocomplete="off" />
+            </div>
+        </div>
+    </div>
+
+    @foreach (var family in Model.Permissions) {
+        <text>
+            <div class="family" data-family="@family.Key">
+                <div class="family__header">@family.Key Permissions</div>
+
+                <div class="family__form">
+                    @foreach(var appProp in typeof(UserPermissions).GetProperties()) {
+                        var app = appProp.GetValue(family.Value, null);
+
+                        <text>
+                            <div data-app="@appProp.Name">
+                                <strong>@appProp.Name</strong>
+
+                                @foreach(var settingProp in app.GetType().GetProperties()) {
+                                    string checkboxId = family.Key + "_" + settingProp.Name;
+
+                                    <text>
+                                        <div class="input-group input-group--horizontal">
+                                            <input data-setting="@settingProp.Name" autocomplete="off" id="@checkboxId" type="checkbox" checked="@settingProp.GetValue(app, null)" />
+                                            <label for="@checkboxId">@settingProp.Name</label>
+                                        </div>
+                                    </text>
+                                }
+                            </div>
+                        </text>
+                    }
+                </div>
+            </div>
+        </text>
+    }
+</div>
+
+<div class="footer button-row button-row--right">
+    <button id="submit">Save Changes</button>
+    <a href="@Url.Action("Index")"><button id="cancel" class="button--gray">Close</button></a>
+</div>
+
+@section Scripts {
+    <script>
+        (function() {
+            document.getElementById("submit").addEventListener("click", function() {
+                submitForm();
+            });
+
+            function submitForm() {
+                let payload = makePayload();
+
+                fetch("", {
+                        headers: {
+                            "Accept": "application/json",
+                            "Content-Type": "application/json",
+                        },
+                        method: "POST",
+                        body: JSON.stringify(payload)
+                    })
+                    .then(function(res) {
+                        if (!res.ok)
+                            throw new Error("HTTP error " + res.status);
+                        return res.json();
+                    })
+                    .then(function(json){
+                        alert(json?.message || "The user could not be updated");
+
+                        if (json?.success)
+                            window.location = "@Url.Action("Index")";
+                    })
+                    .catch(function(res){
+                        console.error(res);
+                        alert("The user could not be updated.");
+                    })
+            }
+
+            function makePayload() {
+                let payload = {
+                    Enabled: document.getElementById("enabled").checked,
+                    UserAdmin: document.getElementById("user-admin").checked,
+                    Username: document.getElementById("username").value,
+                    NewPassword: document.getElementById("new-password").value,
+                    Permissions: makePermissions()
+                };
+
+                return payload;
+            }
+
+            function makePermissions() {
+                let permissions = {};
+                let $families = document.querySelectorAll("[data-family]");
+
+                for (let i = 0; i < $families.length; i++) {
+                    permissions[$families[i].getAttribute("data-family")] = makeApps($families[i]);
+                }
+
+                return permissions;
+            }
+
+            function makeApps($family) {
+                let $apps = $family.querySelectorAll("[data-app]")
+                let apps = {};
+
+                for (let i = 0; i < $apps.length; i++) {
+                    apps[$apps[i].getAttribute("data-app")] = makeSettings($apps[i]);
+                }
+
+                return apps;
+            }
+
+            function makeSettings($app) {
+                let $settings = $app.querySelectorAll("[data-setting]");
+                let settings = {};
+
+                for (let i = 0; i < $settings.length; i++) {
+                    settings[$settings[i].getAttribute("data-setting")] = !!$settings[i].checked;
+                }
+
+                return settings;
+            }
+        })();
+    </script>
+}

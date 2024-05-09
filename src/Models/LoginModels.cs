@@ -13,8 +13,6 @@ public class Login_Authenticate_Request {
 public class AuthenticatedUser {
     public string Username { get; set; }
     public int UserId { get; set; }
-    public List<string> Families { get; set; } = new List<string>();
-    public List<string> PhotoFamilies { get; set; } = new List<string>();
-    public List<string> PhotoDeleteFamilies { get; set; } = new List<string>();
-    public List<string> PhotoPermanentDeleteFamilies { get; set; } = new List<string>();
+    public bool UserAdmin { get; set; }
+    public Dictionary<string, UserPermissions> Families { get; set; } = new();
 }

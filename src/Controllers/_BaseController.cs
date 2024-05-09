@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using PhotoSite.Models;
+using Newtonsoft.Json;
+using PhotoSite.Authentication;
 
 namespace PhotoSite.Controllers;
 
@@ -21,9 +24,19 @@ public abstract class _BaseController : Controller {
     };
 
     protected IServiceProvider _dependencies;
+    protected IAuthenticator _authenticator;
+
+    protected readonly Dictionary<string, UserPermissions> _families;
+    protected readonly bool _userAdmin;
 
     public _BaseController(IServiceProvider dependencies)
     {
         _dependencies = dependencies;
+        _authenticator = dependencies.GetService<IAuthenticator>();
+
+        _families = JsonConvert.DeserializeObject<Dictionary<string, UserPermissions>>(
+            _authenticator.GetClaimValue("families") ?? "{}");
+
+        _userAdmin = bool.Parse(_authenticator.GetClaimValue("userAdmin") ?? "false");
     }
 }

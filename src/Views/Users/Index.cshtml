@@ -1,0 +1,34 @@
+@using PhotoSite.Models;
+
+@{
+    Layout = "_HomeLayout";
+}
+
+@model Users_Index_Model;
+
+<div class="families">
+    <div class="family">
+        <div class="family__header">Users</div>
+
+        <div class="family__icons">
+            <a class="app-launcher" href="@Url.Action("Index", "Home")">
+                <div class="app-launcher-icon">🏠</div>
+                <div class="app-launcher-name">Home</div>
+            </a>
+            
+            <a class="app-launcher" href="@Url.Action("GetUser", new { userId = 0 })">
+                <div class="app-launcher-icon">➕</div>
+                <div class="app-launcher-name">New User</div>
+            </a>
+
+            @foreach (Users_Index_User user in Model.Users) {
+                <text>
+                    <a class="app-launcher" href="@Url.Action("GetUser", new { user.UserId})">
+                        <div class="app-launcher-icon">🙎‍♂️</div>
+                        <div class="app-launcher-name">@user.Username</div>
+                    </a>
+                </text>
+            }
+        </div>
+    </div>
+</div>

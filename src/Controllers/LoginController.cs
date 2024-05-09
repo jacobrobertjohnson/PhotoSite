@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PhotoSite.Models;
 using PhotoSite.Users;
+using Newtonsoft.Json;
 
 namespace PhotoSite.Controllers;
 
@@ -11,7 +12,7 @@ namespace PhotoSite.Controllers;
 public class LoginController : _BaseController
 {
     IUserProvider _userProvider;
-    
+
     public LoginController(IServiceProvider dependencies) : base(dependencies) {
         _userProvider = dependencies.GetService<IUserProvider>();
     }
@@ -40,14 +41,12 @@ public class LoginController : _BaseController
                 new Claim("user", user.Username),
                 new Claim("role", "user"),
                 new Claim("userId", user.UserId.ToString()),
-                new Claim("families", string.Join(",", user.Families)),
-                new Claim("photosFamilies", string.Join(",", user.PhotoFamilies)),
-                new Claim("photosDeleteFamilies", string.Join(",", user.PhotoDeleteFamilies)),
-                new Claim("photosPermanentDeleteFamilies", string.Join(",", user.PhotoPermanentDeleteFamilies)),
+                new Claim("userAdmin", user.UserAdmin.ToString()),
+                new Claim("families", JsonConvert.SerializeObject(user.Families)),
             };
 
             var principal = new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies", "user", "role"));
-            
+
             await HttpContext.SignInAsync(principal);
 
             response = RedirectToAction("Index", "Home");

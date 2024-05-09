@@ -15,15 +15,14 @@ namespace PhotoSite.Controllers;
 public class PhotosController : _BaseController
 {
     ILibraryProvider _libraryProvider;
-    Dictionary<string, Family> _families;
+    Dictionary<string, Family> _photoFamilies;
 
     public PhotosController(IServiceProvider dependencies) : base(dependencies) {
         IAuthenticator authenticator = dependencies.GetService<IAuthenticator>();
-        string[] photosFamilies = authenticator.GetClaimValue("photosFamilies").Split(',');
 
-        _families = dependencies.GetService<AppSettings>()
+        _photoFamilies = dependencies.GetService<AppSettings>()
             .Families
-            .Where(fam => photosFamilies.Contains(fam.Id))
+            .Where(fam => _families[fam.Id].Photos.Enabled)
             .ToDictionary(
                 fam => fam.Id,
                 fam => fam
@@ -42,7 +41,7 @@ public class PhotosController : _BaseController
         IActionResult response = null;
         string date = "",
             dateLabel = "";
-        Family family = _families[familyId];
+        Family family = _photoFamilies[familyId];
         List<string> cameraModels = new List<string>();
         List<Photos_Index_SidebarItem> sidebar = await makeSidebar(family.Id);
         string firstMonthUrl = sidebar
@@ -100,7 +99,7 @@ public class PhotosController : _BaseController
         //     sidebar.Add(new Photos_Index_SidebarItem() { Label = "All Videos" });
 
         sidebar.AddRange(
-            (await _libraryProvider.GetPhotoDates(_families[familyId]))
+            (await _libraryProvider.GetPhotoDates(_photoFamilies[familyId]))
                 .GroupBy(year => year.Year)
                 .Select(year => new Photos_Index_SidebarItem() {
                     Label = $"{year.Key}",
@@ -125,7 +124,7 @@ public class PhotosController : _BaseController
     }
 
     async Task<List<Photo>> Thumbnails(string familyId, string date, string cameraModel) {
-        var family = _families[familyId];
+        var family = _photoFamilies[familyId];
         var dbPhotos = await _libraryProvider.GetPhotos(family, date, cameraModel);
 
         return Photo.MakeList(familyId, Url, dbPhotos);
@@ -134,7 +133,7 @@ public class PhotosController : _BaseController
     [Route("/Photos/{familyId}/Thumbnails/{size}/{filename}")]
     [ResponseCache(Location = ResponseCacheLocation.Any, Duration = ONE_YEAR_IN_SECONDS)]
     public async Task<IActionResult> Thumbnail(string familyId, int size, string filename) {
-        Family family = _families[familyId];
+        Family family = _photoFamilies[familyId];
         QueryPhoto photo = await getPhotoByFilename(family, filename).ConfigureAwait(false);
 
         Thumbnail thumb = new Thumbnail(family, photo, size);
@@ -147,7 +146,7 @@ public class PhotosController : _BaseController
 
     [Route("/Photos/{familyId}/FullSize/{filename}")]
     public async Task<IActionResult> FullSize(string familyId, string filename, bool download = false) {
-        Family family = _families[familyId];
+        Family family = _photoFamilies[familyId];
         QueryPhoto photo = await getPhotoByFilename(family, filename).ConfigureAwait(false);
         PhotoReader contents;
 
@@ -166,7 +165,7 @@ public class PhotosController : _BaseController
 
     [Route("/Photos/{familyId}/Viewer/{filename}")]
     public async Task<IActionResult> Viewer(string familyId, string filename, string cameraModel = null) {
-        Family family = _families[familyId];
+        Family family = _photoFamilies[familyId];
         string prevPhotoUrl = null,
             nextPhotoUrl = null;
         QueryPhoto photo = await getPhotoByFilename(family, filename);
@@ -255,15 +254,15 @@ public class PhotosController : _BaseController
     }
 
 	string makePhotoUrl(string familyId, QueryPhoto photo)
-        => $"/Photos/{familyId}/FullSize/{photo.Id}{photo.Extension}";  
+        => $"/Photos/{familyId}/FullSize/{photo.Id}{photo.Extension}";
 
     string makeViewerUrl(string familyId, QueryPhoto photo)
-        => $"/Photos/{familyId}/Viewer/{photo.Id}{photo.Extension}";  
+        => $"/Photos/{familyId}/Viewer/{photo.Id}{photo.Extension}";
 
     [HttpPut]
     [Route("/Photos/{familyId}")]
     public async Task<IActionResult> DeletePhotos(string familyId, [FromBody] DeletePhoto_Request request) {
-        Family family = _families[familyId];
+        Family family = _photoFamilies[familyId];
 
         foreach (string filename in request.fileIds) {
             try {
