@@ -19,6 +19,7 @@ public class Home_Index_Model {
 
     public List<Home_Index_Family> Families {
         get => _families
+            .Where(fam => fam.Value.ShowOnHome)
             .Select(fam => new Home_Index_Family(_dependencies, fam.Value, fam.Key))
             .Append(Home_Index_Family.MakeGlobalSection(_dependencies, _userAdmin))
             .ToList();

@@ -2,6 +2,9 @@ namespace PhotoSite.Models;
 
 public class UserPermissions {
     public PhotoPermissions Photos { get; set; } = new();
+    public bool ShowOnHome {
+        get => Photos.Enabled;
+    }
 }
 
 public class PhotoPermissions {
