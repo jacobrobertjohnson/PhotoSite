@@ -30,23 +30,34 @@
         }
     });
 
-    _$closeButton && _$closeButton.addEventListener("click", function() {
-        update(null);
-        document.scrollingElement.scrollTop = _scrollState;
-    });
+    _$closeButton && _$closeButton.addEventListener("click", close);
 
-    _$prevButton && _$prevButton.addEventListener("click", function() {
-        update(_$thumbnail.previousElementSibling);
-    });
+    _$prevButton && _$prevButton.addEventListener("click", goBack());
 
-    _$nextButton && _$nextButton.addEventListener("click", function() {
-        update(_$thumbnail.nextElementSibling);
-    });
+    _$nextButton && _$nextButton.addEventListener("click", goForward);
 
     _$deleteButton && _$deleteButton.addEventListener("click", function() {
         if (window.photoList.deletePhotos([_$thumbnail.id], false)) {
             _$thumbnail.parentElement.removeChild(_$thumbnail);
-            update(null);
+            close();
+        }
+    });
+
+    window.addEventListener("keydown", function(e) {
+        if (!isOpen()) return;
+
+        switch (e.code) {
+            case "ArrowLeft":
+            case "ArrowUp":
+                goBack();
+                break;
+            case "ArrowRight":
+            case "ArrowDown":
+                goForward();
+                break;
+            case "Escape":
+                close();
+                break;
         }
     });
 
@@ -58,7 +69,7 @@
     }
 
     function render() {
-        let open = !!_$thumbnail;
+        let open = isOpen();
 
         setVisibility(_$showWhenOpen, open);
         setVisibility(_$hideWhenOpen, !open);
@@ -71,11 +82,32 @@
 
             setVisibility([_$prevButton], _$thumbnail.previousElementSibling);
             setVisibility([_$nextButton], _$thumbnail.nextElementSibling);
+        } else {
+            _$image.removeAttribute("src");
         }
+    }
+
+    function isOpen() {
+        return !!_$thumbnail;
     }
 
     function setVisibility($els, visible) {
         for (let i = 0; i < $els.length; i++)
             $els[i] && $els[i].classList[visible ? "remove" : "add"]("hidden");
+    }
+
+    function close() {
+        update(null);
+        document.scrollingElement.scrollTop = _scrollState;
+    }
+
+    function goBack() {
+        if (_$thumbnail && _$thumbnail.previousElementSibling)
+            update(_$thumbnail.previousElementSibling);
+    }
+
+    function goForward() {
+        if (_$thumbnail && _$thumbnail.nextElementSibling)
+            update(_$thumbnail.nextElementSibling);
     }
 })();

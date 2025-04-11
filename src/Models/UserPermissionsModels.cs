@@ -9,6 +9,7 @@ public class UserPermissions {
 
 public class PhotoPermissions {
     public bool Enabled { get; set; }
+    public bool Upload { get; set; }
     public bool Delete { get; set; }
     public bool DeletePermanently { get; set; }
 }

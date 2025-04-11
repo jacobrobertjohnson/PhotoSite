@@ -4,8 +4,7 @@ namespace PhotoSite.Models;
 
 public class Photos_Index_AspModel : ModelBase {
     public Photos_Index_AspModel(object vueModel) : base(vueModel) { }
-    public bool CanDelete { get; set; }
-    public bool CanDeletePermanently { get; set; }
+    public PhotoPermissions Permissions { get; set; }
     public List<Photos_Index_SidebarItem> Sidebar { get; set; } = new List<Photos_Index_SidebarItem>();
     public List<Photo> Thumbnails { get; set; } = new List<Photo>();
     public List<string> CameraModels { get; set; } = new List<string>();
@@ -64,14 +63,8 @@ public class Photo {
     public DateTime DateTaken { get; set; }
 }
 
-public class Photos_Viewer_AspModel : ModelBase {
-    public Photos_Viewer_AspModel(object vueModel) : base(vueModel) { }
-    public string PhotoUrl { get; set; }
-    public string PrevPhotoUrl { get; set; }
-    public string NextPhotoUrl { get; set; }
-    public string Filename { get; set; }
-    public string FamilyId { get; internal set; }
-    public List<ExifDatum> ExifData { get; set; } = new();
+public class Photos_Upload_Model {
+    public string FamilyName { get; set; }
 }
 
 public class ExifDatum

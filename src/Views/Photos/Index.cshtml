@@ -26,6 +26,14 @@
 			<a href="/" class="sidebar-section-title">🏠 Home Page</a>
 		</div>
 
+		@if (Model.Permissions.Upload) {
+			<text>
+				<div class="sidebar-section collapsible-sidebar-section">
+					<a href="../Upload" class="sidebar-section-title">➕ Upload Photos</a>
+				</div>
+			</text>
+		}
+
 		<div class="sidebar-section collapsible-sidebar-section">
 			<label for="year-collapsible" class="sidebar-section-title">🗓️ Date Taken</label>
 			<input type="checkbox" id="year-collapsible" />
@@ -101,7 +109,7 @@
 			</ul>
 		</div>
 
-		@if (Model.CanDeletePermanently) {
+		@if (Model.Permissions.DeletePermanently) {
 			<text>
 				<div class="sidebar-section collapsible-sidebar-section">
 					<a href="/" class="sidebar-section-title">🗑️ Deleted Items</a>
@@ -158,7 +166,7 @@
 		<button class="select-all hide-if-disabled" id="select-all">☑️ Select All</button>
 		@*<button class="requires-selection" id="download-photos">💾 <span class="hide-on-mobile">&nbsp;Download</span></button>*@
 
-		@if (Model.CanDelete) {
+		@if (Model.Permissions.Delete) {
 			<text>
 				<button class="requires-selection" id="delete-photos">🗑️ <span class="hide-on-mobile">&nbsp;Delete</span></button>
 			</text>
@@ -176,7 +184,7 @@
 			<button type="button">💾 Download</button>
 		</a>
 
-		@if (Model.CanDelete) {
+		@if (Model.Permissions.Delete) {
 			<text>
 				<button type="button" id="photo-viewer-delete-button">🗑️ Delete</button>
 			</text>

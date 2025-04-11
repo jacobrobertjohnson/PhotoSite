@@ -79,8 +79,7 @@ public class PhotosController : _BaseController
             CameraModel = cameraModel,
             Year = year,
             Month = month,
-            CanDelete = _families[familyId].Photos.Delete,
-            CanDeletePermanently = _families[familyId].Photos.DeletePermanently,
+            Permissions = _families[familyId].Photos,
         });
 
         return response;
@@ -163,40 +162,6 @@ public class PhotosController : _BaseController
             await contents.GetContents().ConfigureAwait(false),
             contents.MimeType
         );
-    }
-
-    [Route("/Photos/{familyId}/Viewer/{filename}")]
-    public async Task<IActionResult> Viewer(string familyId, string filename, string cameraModel = null) {
-        Family family = _photoFamilies[familyId];
-        string prevPhotoUrl = null,
-            nextPhotoUrl = null;
-        QueryPhoto photo = await getPhotoByFilename(family, filename);
-        var contents = new PhotoReader(family, photo);
-        string photoDate = $"{photo.DateTaken.Month}/%/{photo.DateTaken.Year}%";
-        List<string> cameraModels = await _libraryProvider.GetCameraModels(family, photoDate);
-
-        if (!cameraModels.Contains(cameraModel))
-            cameraModel = null;
-
-        List<QueryPhoto> allPhotos = await _libraryProvider.GetPhotos(family, photoDate, cameraModel);
-
-        for (int i = 0; i < allPhotos.Count; i++) {
-            if (allPhotos[i].Id == photo.Id) {
-                if (i > 0)
-                    prevPhotoUrl = makeViewerUrl(family.Id, allPhotos[i - 1]);
-                if (i < allPhotos.Count - 1)
-                    nextPhotoUrl = makeViewerUrl(family.Id, allPhotos[i + 1]);
-            }
-        }
-
-        return View(new Photos_Viewer_AspModel(new object()) {
-            PhotoUrl = makePhotoUrl(family.Id, photo),
-            PrevPhotoUrl = prevPhotoUrl,
-            NextPhotoUrl = nextPhotoUrl,
-            Filename = photo.Id + photo.Extension,
-            FamilyId = family.Id,
-            ExifData = GetExifDataForPhoto(contents),
-        });
     }
 
     List<ExifDatum> GetExifDataForPhoto(PhotoReader contents)
@@ -294,5 +259,16 @@ public class PhotosController : _BaseController
         string fileId = Path.GetFileNameWithoutExtension(filename);
 
         return await _libraryProvider.GetPhoto(family, fileId).ConfigureAwait(false);
+    }
+
+    [Route("/Photos/{familyId}/Upload")]
+    public IActionResult Upload(string familyId) {
+        if (!_families[familyId].Photos.Upload)
+            return Unauthorized();
+
+        return View(new Photos_Upload_Model()
+        {
+            FamilyName = _photoFamilies[familyId].Name,
+        });
     }
 }

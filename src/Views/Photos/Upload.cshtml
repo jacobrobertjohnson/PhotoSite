@@ -1,0 +1,39 @@
+@{
+	Layout = "_PhotoLayout";
+}
+
+@model PhotoSite.Models.Photos_Upload_Model;
+
+@section Header {
+	<div class="header-label">
+		<div>@Model.FamilyName - Photos</div>
+		<small>Add New Photos</small>
+	</div>
+}
+
+<section class="photo-date" id="photo-list">
+	<div class="photo-thumbnails" id="thumbnails">
+		<div class="centered-container">
+			<div class="file-upload-container">
+				<div class="new-file-section">
+					<div class="new-file-drop-area hide-on-mobile">
+						Drop images here to upload
+					</div>
+
+					<div class="new-file-or-label hide-on-mobile">-or-</div>
+
+					<div class="new-file-button-area">
+						<input type="file" id="photo-file-picker" multiple=multiple />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+@section Scripts {
+	<script>
+		(function() {
+		})();
+	</script>
+}

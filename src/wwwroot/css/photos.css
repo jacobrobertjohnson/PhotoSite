@@ -59,7 +59,7 @@
 .sidebar {
     background: lightgray;
     border-right: 1px solid lightgray;
-    box-shadow: 0 0 2rem black; 
+    box-shadow: 0 0 2rem black;
     position: fixed;
     top: var(--header-height);
     left: 0;
@@ -369,7 +369,61 @@ body.has-sidebar .sidebar{
     padding-bottom: .5rem;
 }
 
+.centered-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.file-upload-container {
+    width: 480px;
+    display: flex;
+    flex-direction: row;
+    background: snow;
+}
+
+.new-file-section {
+    width: 100%;
+    border-bottom-left-radius: var(--sidebar-section-border-radius);
+    border-bottom-right-radius: var(--sidebar-section-border-radius);
+    box-shadow: 0 .1rem .25rem darkgrey;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.new-file-drop-area {
+    flex-grow: 1;
+    flex-shrink: 1;
+    border: 2px dashed green;
+    padding: 1rem;
+    border-radius: var(--sidebar-section-border-radius);
+    height: 7rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.new-file-or-label {
+    padding: 1rem;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.new-file-button-area {
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+
 @media screen and (max-width: 480px) {
+    .file-upload-container {
+        width: 100%;
+    }
+
     body:not(.has-selection) .footer .requires-selection-mobile {
         display: none;
     }
@@ -421,12 +475,12 @@ body.has-sidebar .sidebar{
         margin-top: 0;
         margin-bottom: 0;
     }
-    
+
 
     .photo-thumbnail:hover .photo-thumbnail-select {
         display: unset;
     }
-    
+
     .footer button {
         margin: 0 0.25rem;
     }
