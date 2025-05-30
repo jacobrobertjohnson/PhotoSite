@@ -20,9 +20,7 @@ public class LoginController : _BaseController
     public IActionResult Index(bool failed = false)
     {
         var model = new Login_Index_Model();
-
-        throw new Exception("Fake Outer", new Exception("Fake Inner"));
-
+        
         if (failed)
         {
             model.Message = "Invalid username/password";
