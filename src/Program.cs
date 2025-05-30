@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using PhotoSite.Authentication;
 using PhotoSite.Bundling;
 using PhotoSite.Crypto;
+using PhotoSite.Filters;
 using PhotoSite.Library;
 using PhotoSite.Models;
 using PhotoSite.Users;
@@ -15,6 +16,10 @@ var appSettings = new AppSettings();
 builder.Configuration.Bind("AppSettings", appSettings);
 
 // Add services to the container.
+builder.Services.AddMvc(options =>
+{
+    options.Filters.Add(typeof(ExceptionLogFilter));
+});
 builder.Services.AddControllersWithViews();
 builder.Services.AddResponseCaching();
 

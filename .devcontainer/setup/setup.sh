@@ -8,6 +8,7 @@ APPS_DIR="$CONTAINER_DIR/apps"
 SRC_DIR="$ROOT_DIR/src"
 IMPORTER_DIR="$DATA_DIR/importer"
 
+ERROR_LOG_PATH="$DATA_DIR/errors"
 PHOTO_FILE_PATH="$DATA_DIR/library/photos"
 PHOTO_THUMBNAIL_PATH="$DATA_DIR/library/thumbnails"
 IMPORTER_CONFIG_PATH="$DATA_DIR/importerConfig.json"
@@ -57,13 +58,14 @@ cd "$SRC_DIR"
 
 echo $(jq -n \
     --arg udb "$USER_DB_PATH" \
+    --arg elp "$ERROR_LOG_PATH" \
     --arg mc "5fec3838-9d87-41ad-8c6f-54514abd43c5" \
     --arg fid "TestFamily" \
     --arg fnm "Test Family" \
     --arg pdb "$PHOTO_DB_PATH" \
     --arg pfp "$PHOTO_FILE_PATH" \
     --arg ptp "$PHOTO_THUMBNAIL_PATH" \
-    '{ AppSettings: { UserDbPath: $udb, MachineKey: $mc, Families: [{ Id: $fid, Name: $fnm, PhotoDbPath: $pdb, PhotoFilePath: $pfp, PhotoThumbnailpath: $ptp }] } }'
+    '{ AppSettings: { UserDbPath: $udb, ErrorLogPath: $elp, MachineKey: $mc, Families: [{ Id: $fid, Name: $fnm, PhotoDbPath: $pdb, PhotoFilePath: $pfp, PhotoThumbnailpath: $ptp }] } }'
 ) > "$SITE_CONFIG_PATH"
 
 sqlite3 "$USER_DB_PATH" < "$USER_SQL_PATH"
