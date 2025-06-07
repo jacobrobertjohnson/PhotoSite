@@ -19,12 +19,15 @@ USER_DB_PATH="$DATA_DIR/Users.db"
 
 USER_SQL_PATH="$SCRIPT_DIR/adduser.sql"
 
+DATA_PROTECTION_KEY_PATH="$DATA_DIR/dataprotection"
+
 # Seed PhotoImporter configs and sample data
 cd "$CONTAINER_DIR"
 mkdir apps
 mkdir data
 cd data
 mkdir importer
+mkdir dataprotection
 
 cp "$SCRIPT_DIR/images/"* "$IMPORTER_DIR"
 
@@ -48,7 +51,7 @@ rm -rf .git
 
 cd src
 dotnet build
-PhotoImporter/bin/Debug/net9.0/PhotoImporter --configFile $IMPORTER_CONFIG_PATH
+PhotoImporter/bin/Debug/net6.0/PhotoImporter --configFile $IMPORTER_CONFIG_PATH
 
 # Generate and install the dotnet dev certificate
 dotnet dev-certs https
@@ -65,7 +68,8 @@ echo $(jq -n \
     --arg pdb "$PHOTO_DB_PATH" \
     --arg pfp "$PHOTO_FILE_PATH" \
     --arg ptp "$PHOTO_THUMBNAIL_PATH" \
-    '{ AppSettings: { UserDbPath: $udb, ErrorLogPath: $elp, MachineKey: $mc, Families: [{ Id: $fid, Name: $fnm, PhotoDbPath: $pdb, PhotoFilePath: $pfp, PhotoThumbnailpath: $ptp }] } }'
+    --arg dpk "$DATA_PROTECTION_KEY_PATH" \
+    '{ AppSettings: { UserDbPath: $udb, ErrorLogPath: $elp, MachineKey: $mc, DataProtectionKeyPath: $dpk, Families: [{ Id: $fid, Name: $fnm, PhotoDbPath: $pdb, PhotoFilePath: $pfp, PhotoThumbnailpath: $ptp }] } }'
 ) > "$SITE_CONFIG_PATH"
 
 sqlite3 "$USER_DB_PATH" < "$USER_SQL_PATH"

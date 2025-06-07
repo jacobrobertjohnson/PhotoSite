@@ -4,6 +4,7 @@ public class AppSettings {
     public string UserDbPath { get; set; }
     public List<Family> Families { get; set; } = new List<Family>();
     public string MachineKey { get; set; }
+    public string DataProtectionKeyPath { get; set; }
     public string ErrorLogPath { get; set; }
 }
 
