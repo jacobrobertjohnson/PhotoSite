@@ -48,7 +48,7 @@ rm -rf .git
 
 cd src
 dotnet build
-PhotoImporter/bin/Debug/net6.0/PhotoImporter --configFile $IMPORTER_CONFIG_PATH
+PhotoImporter/bin/Debug/net9.0/PhotoImporter --configFile $IMPORTER_CONFIG_PATH
 
 # Generate and install the dotnet dev certificate
 dotnet dev-certs https

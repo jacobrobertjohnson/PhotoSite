@@ -78,12 +78,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Use(async (context, next) => {
-    context.Response.Headers.Add("Referrer-Policy", "strict-origin");
-    context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
-    context.Response.Headers.Add("Content-Security-Policy", "default-src https 'self' 'unsafe-inline'");
-    context.Response.Headers.Add("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
-    context.Response.Headers.Add("X-Frame-Options", "DENY");
-    context.Response.Headers.Add("Permissions-Policy", "fullscreen=(self), microphone=(), camera=(), geolocation=()");
+    context.Response.Headers["Referrer-Policy"] = "strict-origin";
+    context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+    context.Response.Headers["Content-Security-Policy"] = "default-src https 'self' 'unsafe-inline'";
+    context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+    context.Response.Headers["X-Frame-Options"] = "DENY";
+    context.Response.Headers["Permissions-Policy"] = "fullscreen=(self), microphone=(), camera=(), geolocation=()";
 
     await next(context);
 });

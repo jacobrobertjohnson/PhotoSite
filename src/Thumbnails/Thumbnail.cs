@@ -1,4 +1,6 @@
 using PhotoSite.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace PhotoSite.Thumbnails;
 

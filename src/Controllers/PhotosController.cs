@@ -6,6 +6,7 @@ using PhotoSite.Library;
 using PhotoSite.Models;
 using PhotoSite.Thumbnails;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using SixLabors.ImageSharp;
 using System.IO;
 using System.Text;
 
