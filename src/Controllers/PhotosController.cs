@@ -23,6 +23,7 @@ public class PhotosController : _BaseController
 
         _photoFamilies = dependencies.GetService<AppSettings>()
             .Families
+            .Where(fam => _families.ContainsKey(fam.Id))
             .Where(fam => _families[fam.Id].Photos.Enabled)
             .ToDictionary(
                 fam => fam.Id,
